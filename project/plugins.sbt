@@ -1,6 +1,4 @@
-addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "7533cfd7-SNAPSHOT")
-resolvers += Resolver.sonatypeRepo("snapshots")
-addSbtPlugin("com.dwijnand" % "sbt-dynver" % "2.1.0")
+addSbtPlugin("com.dwijnand" % "sbt-dynver" % "3.0.0")
 addSbtPlugin(
   "io.get-coursier" % "sbt-coursier" % coursier.util.Properties.version
 )
