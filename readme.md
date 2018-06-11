@@ -18,7 +18,7 @@ and make sure you have publishing rights for a domain name.
 Next, install this plugin in `project/plugins.sbt`
 
 ```scala
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "<STILL UNPUBLISHED>")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.0.0-M1")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
