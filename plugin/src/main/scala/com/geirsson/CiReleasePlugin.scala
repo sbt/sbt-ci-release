@@ -1,5 +1,6 @@
 package com.geirsson
 
+import com.typesafe.sbt.pgp.PgpKeys
 import sbtdynver.DynVerPlugin.autoImport._
 import sbt.Def
 import sbt._
@@ -23,6 +24,7 @@ object CiReleasePlugin extends AutoPlugin {
     }
 
   override def buildSettings: Seq[Def.Setting[_]] = List(
+    PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray()),
     dynverSonatypeSnapshots := true
   )
 
