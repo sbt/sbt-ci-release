@@ -49,14 +49,6 @@ inThisBuild(List(
 ))
 ```
 
-Next, copy-paste the following to the bottom of `build.sbt`
-
-```scala
-inScope(Global)(Seq(
-  PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
-))
-```
-
 Next, create a fresh gpg key that you will share with Travis CI and only use for
 this particular project.
 
