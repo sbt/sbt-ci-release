@@ -20,6 +20,8 @@ inThisBuild(
   )
 )
 
+skip in publish := true
+
 lazy val plugin = project
   .settings(
     moduleName := "sbt-ci-release",

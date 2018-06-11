@@ -12,14 +12,10 @@ object CiReleasePlugin extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = JvmPlugin
 
-  object autoImport {
-    def isTravisTag: Boolean =
-      Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
-    def isTravisSecure: Boolean =
-      System.getenv("TRAVIS_SECURE_ENV_VARS") == "true"
-  }
-
-  import autoImport._
+  def isTravisTag: Boolean =
+    Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
+  def isTravisSecure: Boolean =
+    System.getenv("TRAVIS_SECURE_ENV_VARS") == "true"
 
   private def env(key: String): String =
     Option(System.getenv(key)).getOrElse {
