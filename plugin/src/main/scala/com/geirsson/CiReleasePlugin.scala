@@ -20,13 +20,18 @@ object CiReleasePlugin extends AutoPlugin {
 
   private def env(key: String): String =
     Option(System.getenv(key)).getOrElse {
-      throw new NoSuchElementException(key)
+      throw new NoSuchElementException(s"""sys.env("$key")""")
     }
 
   override def buildSettings: Seq[Def.Setting[_]] = List(
     PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray()),
     dynverSonatypeSnapshots := true
   )
+
+  def setupGpg(): Unit = {
+    println("Setting up gpg")
+    (s"echo ${env("PGP_SECRET")}" #| "base64 --decode" #| "gpg --import").!
+  }
 
   override def globalSettings: Seq[Def.Setting[_]] = List(
     publishMavenStyle := true,
@@ -41,8 +46,7 @@ object CiReleasePlugin extends AutoPlugin {
             s"  TRAVIS_BRANCH=${env("TRAVIS_BRANCH")}\n" +
             s"  TRAVIS_TAG=${env("TRAVIS_TAG")}"
         )
-        println("Setting up gpg")
-        (s"echo ${env("PGP_SECRET")}" #| "base64 --decode" #| "gpg --import").!
+        setupGpg()
         if (!isTravisTag) {
           println(s"No tag push, publishing SNAPSHOT")
           "+publish" ::
