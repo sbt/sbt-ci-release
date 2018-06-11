@@ -1,4 +1,6 @@
 package com.geirsson
+
+import sbtdynver.DynVerPlugin.autoImport._
 import sbt.Def
 import sbt._
 import sbt.Keys._
@@ -10,19 +12,19 @@ object CiReleasePlugin extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = JvmPlugin
 
-  object autoImport {
-    def isTravisTag: Boolean =
-      Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
-    def isTravisSecure: Boolean =
-      System.getenv("TRAVIS_SECURE_ENV_VARS") == "true"
-  }
-
-  import autoImport._
+  def isTravisTag: Boolean =
+    Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
+  def isTravisSecure: Boolean =
+    System.getenv("TRAVIS_SECURE_ENV_VARS") == "true"
 
   private def env(key: String): String =
     Option(System.getenv(key)).getOrElse {
       throw new NoSuchElementException(key)
     }
+
+  override def buildSettings: Seq[Def.Setting[_]] = List(
+    dynverSonatypeSnapshots := true
+  )
 
   override def globalSettings: Seq[Def.Setting[_]] = List(
     publishMavenStyle := true,
