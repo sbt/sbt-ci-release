@@ -156,7 +156,7 @@ We're all set! Time to manually try out the new setup
 
 - Merge a PR to your project and watch the CI release a -SNAPSHOT for your
   project.
-- Push a tag and watch the CI release a -SNAPSHOT for your project.
+- Push a tag and watch the CI do a regular release for your project.
 
 It's is normal that something fails on the first attempt to publish from CI.
 Even if it takes 10 attempts to get it right, it's still worth it because it's
