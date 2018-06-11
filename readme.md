@@ -48,7 +48,7 @@ Next, define publishing settings at the top of `build.sbt`
 inThisBuild(List(
   organization := "com.geirsson",
   homepage := Some(url("https://github.com/scalameta/sbt-scalafmt")),
-  licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
       "olafurpg",
@@ -59,6 +59,16 @@ inThisBuild(List(
   )
 ))
 ```
+
+Next, copy-paste the following to the bottom of `build.sbt`
+
+```scala
+inScope(Global)(List(
+  PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
+))
+```
+(NOTE. I tried to automatically define `PGP_PASSPHRASE` in `sbt-ci-release` but it doesn't seem to work)
+
 
 Next, create a fresh gpg key that you will share with Travis CI and only use for
 this project.
@@ -211,3 +221,16 @@ The source code for sbt-ci-release is only ~50 loc, see
 [CiReleasePlugin.scala](https://github.com/olafurpg/sbt-ci-release/blob/master/plugin/src/main/scala/com/geirsson/CiReleasePlugin.scala).
 You can copy-paste it to `project/` of your build and tweak the settings for your
 environment.
+
+### CI freezes on "Please enter PGP passphrase (or ENTER to abort):"
+
+Make sure you define the following settings in the top-level of your `build.sbt`
+```scala
+inScope(Global)(List(
+  PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
+))
+```
+NOTE. It doesn't seem possible to define this setting outside of `build.sbt`, I've tried 
+overriding `globalSettings` and `buildSettings` in auto-plugins but it doesn't work.
+This setting needs to appear in every `build.sbt`.
+Let me know if you find a better workaround!

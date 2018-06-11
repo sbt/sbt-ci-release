@@ -33,3 +33,10 @@ lazy val plugin = project
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.3"),
     addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
   )
+
+// For some reason, it doesn't work if this is defined in buildSettings in CiReleasePlugin.
+inScope(Global)(
+  Seq(
+    PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
+  )
+)
