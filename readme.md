@@ -23,7 +23,8 @@ Next, install this plugin in `project/plugins.sbt`
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.geirsson/sbt-ci-release/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.geirsson/sbt-ci-release)
 
 ```scala
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.0.0-M1")
+// sbt 1 only, see FAQ for 0.13 support
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.0.0")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
@@ -67,8 +68,6 @@ inScope(Global)(List(
   PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 ))
 ```
-(NOTE. I tried to automatically define `PGP_PASSPHRASE` in `sbt-ci-release` but it doesn't seem to work)
-
 
 Next, create a fresh gpg key that you will share with Travis CI and only use for
 this project.
@@ -119,6 +118,7 @@ Define four secret variables
 ![](https://user-images.githubusercontent.com/1408093/41207402-bbb3970a-6d15-11e8-8772-000cc194ee92.png)
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
+  gpg key.
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
   export from the command line like here below
 
@@ -132,7 +132,6 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://oss.sonatype.org/
 - `SONATYPE_USERNAME`: The email you use to log into https://oss.sonatype.org/
-  gpg key.
 
 Next, update `.travis.yml` to trigger `ci-release` on successful merge into
 master and on tag push. There are many ways to do this, but I recommend using
@@ -221,6 +220,13 @@ The source code for sbt-ci-release is only ~50 loc, see
 [CiReleasePlugin.scala](https://github.com/olafurpg/sbt-ci-release/blob/master/plugin/src/main/scala/com/geirsson/CiReleasePlugin.scala).
 You can copy-paste it to `project/` of your build and tweak the settings for your
 environment.
+
+### Does sbt-ci-release work for sbt 0.13?
+
+Yes, but the plugin is not relased for sbt 0.13.
+The plugin source code is a single file which you can copy-paste into `project/CiReleasePlugin.scala`
+of your 0.13 build.
+Make sure you also `addSbtPlugin(sbt-dynver + sbt-sonatype + sbt-gpg + sbt-git)`.
 
 ### CI freezes on "Please enter PGP passphrase (or ENTER to abort):"
 
