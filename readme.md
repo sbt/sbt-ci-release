@@ -104,13 +104,38 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
   gpg key.
 
 Next, update `.travis.yml` to trigger `ci-release` on successful merge into master and on tag push.
+We use [Travis "build stages"](https://docs.travis-ci.com/user/build-stages/) to implement this.
+
+- define `test` and `release` build stages
 
 ```yml
-after_success:
-- sbt ci-release
+stages:
+  - name: test
+  - name: release
+    if: (branch = master AND type = push) OR (tag IS present)
 ```
 
-You're good to go!
+- define your build matrix with `ci-release` at the bottom, for example:
+```yml
+jobs:
+  include:
+    # default stage is "test"
+    - env: TEST="compile"
+      script: sbt compile
+    - env: TEST="formatting"
+      script: ./bin/scalafmt --test
+    # run ci-release only if all previous stages passed.
+    - stage: release
+      script: sbt ci-release
+```
+
+It's not necessary to use build stages.
+The reason we use build stages is to prevent that `ci-release` runs multiple times in parallel jobs.
+If we use for example `after_success`, we would run `ci-release` after both `TEST="formatting"` and `TEST="compile"`.
+As long as you make sure you don't publish the same module multiple times, you can use any Travis configuration you like.
+
+We're all set! Time to manually try out the new setup
+
 - Merge a PR to your project and watch the CI release a -SNAPSHOT for your project.
 - Push a tag and watch the CI release a -SNAPSHOT for your project.
 

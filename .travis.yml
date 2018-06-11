@@ -2,6 +2,11 @@ language: scala
 jdk:
   - oraclejdk8
 
+stages:
+  - name: test
+  - name: release
+    if: (branch = master AND type = push) OR (tag IS present)
+
 jobs:
   include:
     - env: TEST="scalafmt"
@@ -9,6 +14,8 @@ jobs:
     - env: TEST="compile"
       script:
         - sbt compile
+    - stage: release
+      script: sbt ci-release
 
 cache:
   directories:
@@ -27,6 +34,3 @@ before_cache:
 
 before_install:
   - git fetch --tags
-
-after_success:
-- sbt ci-release
