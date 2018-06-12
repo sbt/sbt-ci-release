@@ -24,7 +24,7 @@ Next, install this plugin in `project/plugins.sbt`
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.0.0")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.1.0")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
