@@ -1,6 +1,8 @@
 package com.geirsson
 
 import sbtdynver.DynVerPlugin.autoImport._
+import com.typesafe.sbt.SbtPgp
+import com.typesafe.sbt.SbtPgp.autoImport._
 import sbt.Def
 import sbt._
 import sbt.Keys._
@@ -10,7 +12,7 @@ import sys.process._
 object CiReleasePlugin extends AutoPlugin {
 
   override def trigger = allRequirements
-  override def requires = JvmPlugin
+  override def requires = JvmPlugin && SbtPgp
 
   def isTravisTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
@@ -22,7 +24,8 @@ object CiReleasePlugin extends AutoPlugin {
   }
 
   override def buildSettings: Seq[Def.Setting[_]] = List(
-    dynverSonatypeSnapshots := true
+    dynverSonatypeSnapshots := true,
+    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
   )
 
   override def globalSettings: Seq[Def.Setting[_]] = List(
