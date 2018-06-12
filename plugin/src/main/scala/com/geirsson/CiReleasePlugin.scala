@@ -17,19 +17,13 @@ object CiReleasePlugin extends AutoPlugin {
   def isTravisSecure: Boolean =
     System.getenv("TRAVIS_SECURE_ENV_VARS") == "true"
 
-  private def env(key: String): String =
-    Option(System.getenv(key)).getOrElse {
-      throw new NoSuchElementException(s"""sys.env("$key")""")
-    }
+  def setupGpg(): Unit = {
+    (s"echo ${sys.env("PGP_SECRET")}" #| "base64 --decode" #| "gpg --import").!
+  }
 
   override def buildSettings: Seq[Def.Setting[_]] = List(
     dynverSonatypeSnapshots := true
   )
-
-  def setupGpg(): Unit = {
-    println("Setting up gpg")
-    (s"echo ${env("PGP_SECRET")}" #| "base64 --decode" #| "gpg --import").!
-  }
 
   override def globalSettings: Seq[Def.Setting[_]] = List(
     publishMavenStyle := true,
@@ -40,9 +34,9 @@ object CiReleasePlugin extends AutoPlugin {
       } else {
         println(
           s"Running ci-release.\n" +
-            s"  TRAVIS_SECURE_ENV_VARS=${env("TRAVIS_SECURE_ENV_VARS")}\n" +
-            s"  TRAVIS_BRANCH=${env("TRAVIS_BRANCH")}\n" +
-            s"  TRAVIS_TAG=${env("TRAVIS_TAG")}"
+            s"  TRAVIS_SECURE_ENV_VARS=${sys.env("TRAVIS_SECURE_ENV_VARS")}\n" +
+            s"  TRAVIS_BRANCH=${sys.env("TRAVIS_BRANCH")}\n" +
+            s"  TRAVIS_TAG=${sys.env("TRAVIS_TAG")}"
         )
         setupGpg()
         if (!isTravisTag) {

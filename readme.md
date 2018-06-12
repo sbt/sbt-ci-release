@@ -178,6 +178,19 @@ Even if it takes 10 attempts to get it right, it's still worth it because it's
 so nice to have automatic CI releases.
 
 
+## Alternatives
+
+There exist great alternatives to sbt-ci-release that may work better for your setup.
+
+- [sbt-release-early](https://github.com/scalacenter/sbt-release-early): additionally supports publishing to Bintray and
+  other CI environments than Travis.
+- [sbt-rig](https://github.com/Verizon/sbt-rig): additionally supporting publishing code
+  coverage reports, managing test dependencies and publishing docs.
+ 
+The biggest difference between these and sbt-ci-release wrt to publishing
+is the base64 encoded `PGP_SECRET` variable.
+I never managed to get the encrypted files and openssl working.
+  
 ## FAQ
 
 ### How do I publish sbt plugins?
@@ -216,7 +229,9 @@ coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapsho
 
 ### What about other CIs environments than Travis?
 
-The source code for sbt-ci-release is only ~50 loc, see
+You can try [sbt-release-early](https://github.com/scalacenter/sbt-release-early).
+
+Alternatively, the source code for sbt-ci-release is only ~50 loc, see
 [CiReleasePlugin.scala](https://github.com/olafurpg/sbt-ci-release/blob/master/plugin/src/main/scala/com/geirsson/CiReleasePlugin.scala).
 You can copy-paste it to `project/` of your build and tweak the settings for your
 environment.
@@ -240,3 +255,11 @@ NOTE. It doesn't seem possible to define this setting outside of `build.sbt`, I'
 overriding `globalSettings` and `buildSettings` in auto-plugins but it doesn't work.
 This setting needs to appear in every `build.sbt`.
 Let me know if you find a better workaround!
+
+### How do I disable publishing in certain projects?
+
+Add the following to the project settings (works only in sbt 1)
+
+```scala
+skip in publish := true
+```
