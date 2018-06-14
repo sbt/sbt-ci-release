@@ -33,6 +33,7 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override def globalSettings: Seq[Def.Setting[_]] = List(
+    publishArtifact.in(Test) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { s =>
       if (!isTravisSecure) {
@@ -62,8 +63,8 @@ object CiReleasePlugin extends AutoPlugin {
 
   override def projectSettings: Seq[Def.Setting[_]] = List(
     publishTo := Some {
-      if (isTravisTag) Opts.resolver.sonatypeStaging
-      else Opts.resolver.sonatypeSnapshots
+      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
+      else Opts.resolver.sonatypeStaging
     }
   )
 
