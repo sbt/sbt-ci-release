@@ -1,5 +1,6 @@
 package com.geirsson
 
+import com.typesafe.sbt.GitPlugin
 import sbtdynver.DynVerPlugin.autoImport._
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.SbtPgp.autoImport._
@@ -7,12 +8,15 @@ import sbt.Def
 import sbt._
 import sbt.Keys._
 import sbt.plugins.JvmPlugin
+import sbtdynver.DynVerPlugin
 import sys.process._
+import xerial.sbt.Sonatype
 
 object CiReleasePlugin extends AutoPlugin {
 
   override def trigger = allRequirements
-  override def requires = JvmPlugin && SbtPgp
+  override def requires =
+    JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin && Sonatype
 
   def isTravisTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
