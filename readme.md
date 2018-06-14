@@ -152,7 +152,7 @@ jobs:
       script: ./bin/scalafmt --test
     # run ci-release only if previous stages passed
     - stage: release
-      script: sbt ci-release
+      script: travis_wait 60 sbt ci-release
 ```
 
 If we for example use `after_success` instead of build stages, we

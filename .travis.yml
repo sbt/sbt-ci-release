@@ -15,7 +15,7 @@ jobs:
       script:
         - sbt compile
     - stage: release
-      script: sbt ci-release
+      script: travis_wait 60 sbt ci-release
 
 cache:
   directories:
