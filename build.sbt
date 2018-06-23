@@ -20,7 +20,7 @@ inThisBuild(
   )
 )
 
-skip in publish := true
+skip in publish := true // don't publish the root project
 
 lazy val plugin = project
   .settings(

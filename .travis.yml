@@ -12,8 +12,7 @@ jobs:
     - env: TEST="scalafmt"
       script: ./bin/scalafmt --test
     - env: TEST="compile"
-      script:
-        - sbt compile
+      script: sbt compile
     - stage: release
       script: travis_wait 60 sbt ci-release
 
