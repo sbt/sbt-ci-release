@@ -194,19 +194,13 @@ jobs:
       script: ./bin/scalafmt --test
     # run ci-release only if previous stages passed
     - stage: release
-      script: travis_wait 60 sbt ci-release
+      script: sbt ci-release
 ```
 
 Notes:
 
 - for a complete example of the Travis configuration, see the [.travis.yml in
-  this
-  repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.ym)
-- `travis_wait` does **not** make the job wait. The `ci-release` step takes a
-  while to run so we use `travis_wait 60` to ensure that output is regularly
-  printed to the console to prevent the job from being killed. For more details,
-  see
-  Travis docs on [Build times out because no output was received](https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received)
+  this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.ym)
 - if we use `after_success` instead of build stages, we would run `ci-release`
   after both `TEST="formatting"` and `TEST="compile"`. As long as you make sure
   you don't publish the same module multiple times, you can use any Travis
