@@ -70,6 +70,7 @@ Make sure `build.sbt` does not define any of the following settings
 - `version`: handled by sbt-dynver
 - `publishTo`: handled by sbt-ci-release
 - `publishMavenStyle`: handled by sbt-ci-release
+- `credentials`: handled by sbt-sonatype
 
 Next, define publishing settings at the top of `build.sbt`
 
@@ -162,7 +163,7 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 Next, update `.travis.yml` to trigger `ci-release` on successful merge into
 master and on tag push. There are many ways to do this, but I recommend using
 [Travis "build stages"](https://docs.travis-ci.com/user/build-stages/). It's not
-necessary to use build stages but they makes it easy to avoid publishing the
+necessary to use build stages but they make it easy to avoid publishing the
 same module multiple times from parallel jobs.
 
 - First, ensure that git tags are always fetched so that sbt-dynver can pick up
@@ -200,7 +201,7 @@ jobs:
 Notes:
 
 - for a complete example of the Travis configuration, see the [.travis.yml in
-  this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.ym)
+  this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
   after both `TEST="formatting"` and `TEST="compile"`. As long as you make sure
   you don't publish the same module multiple times, you can use any Travis
