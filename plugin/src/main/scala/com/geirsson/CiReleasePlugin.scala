@@ -11,6 +11,7 @@ import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sys.process._
 import xerial.sbt.Sonatype
+import xerial.sbt.Sonatype.autoImport._
 
 object CiReleasePlugin extends AutoPlugin {
 
@@ -35,37 +36,52 @@ object CiReleasePlugin extends AutoPlugin {
   override def globalSettings: Seq[Def.Setting[_]] = List(
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
-    commands += Command.command("ci-release") { s =>
+    commands += Command.command("ci-release") { currentState =>
       if (!isTravisSecure) {
         println("No access to secret variables, doing nothing")
-        s
+        currentState
       } else {
+        val tag = sys.env("TRAVIS_TAG").trim
         println(
           s"Running ci-release.\n" +
             s"  TRAVIS_SECURE_ENV_VARS=${sys.env("TRAVIS_SECURE_ENV_VARS")}\n" +
             s"  TRAVIS_BRANCH=${sys.env("TRAVIS_BRANCH")}\n" +
-            s"  TRAVIS_TAG=${sys.env("TRAVIS_TAG")}"
+            s"  TRAVIS_TAG=${tag}"
         )
         setupGpg()
         if (!isTravisTag) {
-          println(s"No tag push, publishing SNAPSHOT")
-          "+publish" ::
-            s
+          if (isSnapshotVersion(currentState)) {
+            println(s"No tag push, publishing SNAPSHOT")
+            sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
+              currentState
+          } else {
+            // Happens when a tag is pushed right after merge causing the master branch
+            // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
+            println(
+              "Snapshot releases must have -SNAPSHOT version number, doing nothing"
+            )
+            currentState
+          }
         } else {
           println("Tag push detected, publishing a stable release")
-          "+publishSigned" ::
-            "sonatypeReleaseAll" ::
-            s
+          s"sonatypeOpen $tag" ::
+            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+            s"sonatypeRelease $tag" ::
+            currentState
         }
       }
     }
   )
 
   override def projectSettings: Seq[Def.Setting[_]] = List(
-    publishTo := Some {
-      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
-      else Opts.resolver.sonatypeStaging
-    }
+    publishTo := sonatypePublishTo.value
   )
+
+  def isSnapshotVersion(state: State): Boolean = {
+    version.get(Project.extract(state).structure.data) match {
+      case Some(v) => v.endsWith("-SNAPSHOT")
+      case None    => throw new NoSuchFieldError("version")
+    }
+  }
 
 }

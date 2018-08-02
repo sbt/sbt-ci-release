@@ -52,7 +52,7 @@ Next, install this plugin in `project/plugins.sbt`
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.1.2")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.1.4")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
@@ -200,6 +200,13 @@ jobs:
 
 Notes:
 
+- the default `ci-release` command invokes `+publish` for SNAPSHOT releases
+  `+publishSigned` for stable releases. To customize the commands, configure
+  the environment variables
+  - `CI_RELEASE`: for stable releases. For example `^publishSigned` to cross-build
+  an sbt plugin.
+  - `CI_SNAPSHOT_RELEASE`: for SNAPSHOT releases. For example, `+publish` to cross-build
+  an sbt plugin.
 - for a complete example of the Travis configuration, see the [.travis.yml in
   this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
@@ -322,6 +329,15 @@ This error happens when you publish a non-SNAPSHOT version to the snapshot
 repository. If you pushed a tag, make sure the tag version number starts with
 `v`. This error can happen if you tag with the version `0.1.0` instead of
 `v0.1.0`.
+
+### Failed: signature-staging, failureMessage:Missing Signature:
+
+Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
+This failure can happen in case you push a git tag immediately after merging
+a branch into master. A manual workaround is to log into https://oss.sonatype.org/
+and drop the failing repository from the web UI.
+Alternatively, you can run `sonatypeDrop <staging-repo-id>` from the sbt shell instead
+of using the web UI.
 
 ## Alternatives
 

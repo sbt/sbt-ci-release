@@ -14,9 +14,7 @@ inThisBuild(
       )
     ),
     resolvers += Resolver.sonatypeRepo("releases"),
-    scalaVersion := "2.12.6",
-    publishArtifact in packageDoc := sys.env.contains("CI"),
-    publishArtifact in packageSrc := sys.env.contains("CI")
+    scalaVersion := "2.12.6"
   )
 )
 
