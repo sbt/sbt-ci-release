@@ -51,12 +51,12 @@ object CiReleasePlugin extends AutoPlugin {
         setupGpg()
         if (!isTravisTag) {
           println(s"No tag push, publishing SNAPSHOT")
-          "+publish" ::
+          sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
             s
         } else {
           println("Tag push detected, publishing a stable release")
           s"sonatypeOpen $tag" ::
-            s"+publishSigned" ::
+            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             s"sonatypeRelease $tag" ::
             s
         }

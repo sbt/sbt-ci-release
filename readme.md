@@ -199,6 +199,13 @@ jobs:
 
 Notes:
 
+- the default `ci-release` command invokes `+publish` for SNAPSHOT releases
+  `+publishSigned` for stable releases. To customize the commands, configure
+  the environment variables
+  - `CI_RELEASE`: for stable releases. For example `^publishSigned` to cross-build
+  an sbt plugin.
+  - `CI_SNAPSHOT_RELEASE`: for SNAPSHOT releases. For example, `+publish` to cross-build
+  an sbt plugin.
 - for a complete example of the Travis configuration, see the [.travis.yml in
   this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.ym)
 - if we use `after_success` instead of build stages, we would run `ci-release`
