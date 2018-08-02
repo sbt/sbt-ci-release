@@ -36,10 +36,10 @@ object CiReleasePlugin extends AutoPlugin {
   override def globalSettings: Seq[Def.Setting[_]] = List(
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
-    commands += Command.command("ci-release") { s =>
+    commands += Command.command("ci-release") { currentState =>
       if (!isTravisSecure) {
         println("No access to secret variables, doing nothing")
-        s
+        currentState
       } else {
         val tag = sys.env("TRAVIS_TAG").trim
         println(
@@ -50,15 +50,24 @@ object CiReleasePlugin extends AutoPlugin {
         )
         setupGpg()
         if (!isTravisTag) {
-          println(s"No tag push, publishing SNAPSHOT")
-          sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
-            s
+          if (isSnapshotVersion(currentState)) {
+            println(s"No tag push, publishing SNAPSHOT")
+            sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
+              currentState
+          } else {
+            // Happens when a tag is pushed right after merge causing the master branch
+            // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
+            println(
+              "Snapshot releases must have -SNAPSHOT version number, doing nothing"
+            )
+            currentState
+          }
         } else {
           println("Tag push detected, publishing a stable release")
           s"sonatypeOpen $tag" ::
             sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             s"sonatypeRelease $tag" ::
-            s
+            currentState
         }
       }
     }
@@ -67,5 +76,12 @@ object CiReleasePlugin extends AutoPlugin {
   override def projectSettings: Seq[Def.Setting[_]] = List(
     publishTo := sonatypePublishTo.value
   )
+
+  def isSnapshotVersion(state: State): Boolean = {
+    version.get(Project.extract(state).structure.data) match {
+      case Some(v) => v.endsWith("-SNAPSHOT")
+      case None    => throw new NoSuchFieldError("version")
+    }
+  }
 
 }
