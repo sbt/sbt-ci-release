@@ -11,6 +11,7 @@ import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sys.process._
 import xerial.sbt.Sonatype
+import xerial.sbt.Sonatype.autoImport._
 
 object CiReleasePlugin extends AutoPlugin {
 
@@ -40,11 +41,12 @@ object CiReleasePlugin extends AutoPlugin {
         println("No access to secret variables, doing nothing")
         s
       } else {
+        val tag = sys.env("TRAVIS_TAG").trim
         println(
           s"Running ci-release.\n" +
             s"  TRAVIS_SECURE_ENV_VARS=${sys.env("TRAVIS_SECURE_ENV_VARS")}\n" +
             s"  TRAVIS_BRANCH=${sys.env("TRAVIS_BRANCH")}\n" +
-            s"  TRAVIS_TAG=${sys.env("TRAVIS_TAG")}"
+            s"  TRAVIS_TAG=${tag}"
         )
         setupGpg()
         if (!isTravisTag) {
@@ -53,8 +55,9 @@ object CiReleasePlugin extends AutoPlugin {
             s
         } else {
           println("Tag push detected, publishing a stable release")
-          "+publishSigned" ::
-            "sonatypeReleaseAll" ::
+          s"sonatypeOpen $tag" ::
+            s"+publishSigned" ::
+            s"sonatypeRelease $tag" ::
             s
         }
       }
@@ -62,10 +65,7 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override def projectSettings: Seq[Def.Setting[_]] = List(
-    publishTo := Some {
-      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
-      else Opts.resolver.sonatypeStaging
-    }
+    publishTo := sonatypePublishTo.value
   )
 
 }
