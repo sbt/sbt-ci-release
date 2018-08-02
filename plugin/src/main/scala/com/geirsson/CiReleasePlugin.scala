@@ -41,12 +41,11 @@ object CiReleasePlugin extends AutoPlugin {
         println("No access to secret variables, doing nothing")
         currentState
       } else {
-        val tag = sys.env("TRAVIS_TAG").trim
         println(
           s"Running ci-release.\n" +
             s"  TRAVIS_SECURE_ENV_VARS=${sys.env("TRAVIS_SECURE_ENV_VARS")}\n" +
             s"  TRAVIS_BRANCH=${sys.env("TRAVIS_BRANCH")}\n" +
-            s"  TRAVIS_TAG=${tag}"
+            s"  TRAVIS_TAG=${sys.env("TRAVIS_TAG")}"
         )
         setupGpg()
         if (!isTravisTag) {
@@ -64,8 +63,7 @@ object CiReleasePlugin extends AutoPlugin {
           }
         } else {
           println("Tag push detected, publishing a stable release")
-          s"sonatypeOpen $tag" ::
-            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+          sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             s"sonatypeRelease" ::
             currentState
         }
