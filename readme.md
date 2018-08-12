@@ -150,7 +150,9 @@ Define four secret variables
 ```
 # macOS
 gpg --armor --export-secret-keys $LONG_ID | base64 | pbcopy
-# linux
+# Ubuntu (assuming GNU base64)
+gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip
+# FreeBSD (assuming BSD base64)
 gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 ```
 
@@ -321,7 +323,8 @@ skip in publish := true
 
 ### java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff
 
-Make sure you exported the correct `LONG_ID` for the gpg key.
+- Make sure you exported the correct `LONG_ID` for the gpg key.
+- Make sure the base64 exported secret GPG key is a single line (not line wrapped). If you use the GNU coreutils `base64` (default on Ubuntu), pass in the `-w0` flag to disable line wrapping.
 
 ### java.io.IOException: PUT operation to URL https://oss.sonatype.org/content/repositories/snapshots 400: Bad Request
 
