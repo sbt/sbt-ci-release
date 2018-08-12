@@ -5,8 +5,9 @@
 This is an sbt plugin to help automate publishing from Travis CI to Sonatype to
 Maven Central.
 
-- git tag pushes are published as regular relases to Maven Central
-- merge into master commits are published as -SNAPSHOT
+- git tag pushes are published as regular releases to Maven Central
+- merge into master commits are published as -SNAPSHOT with a unique version
+  number for every commit
 
 Beware that publishing from Travis CI requires you to expose Sonatype
 credentials as secret environment variables in Travis CI jobs. However, note
@@ -159,6 +160,8 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://oss.sonatype.org/
 - `SONATYPE_USERNAME`: The email you use to log into https://oss.sonatype.org/
+- (optional) `CI_RELEASE`: the command to publish all artifacts for stable releases. Defaults to `+publishSigned` if not provided.
+- (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a SNAPSHOT releases. Defaults to `+publish` if not provided.
 
 ### .travis.yml
 
@@ -202,13 +205,6 @@ jobs:
 
 Notes:
 
-- the default `ci-release` command invokes `+publish` for SNAPSHOT releases
-  `+publishSigned` for stable releases. To customize the commands, configure
-  the environment variables
-  - `CI_RELEASE`: for stable releases. For example `^publishSigned` to cross-build
-  an sbt plugin.
-  - `CI_SNAPSHOT_RELEASE`: for SNAPSHOT releases. For example, `+publish` to cross-build
-  an sbt plugin.
 - for a complete example of the Travis configuration, see the [.travis.yml in
   this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
@@ -245,10 +241,24 @@ Enjoy 👌
 
 ## FAQ
 
-### How do I publish sbt plugins?
+### How do I disable publishing in certain projects?
 
-You can publish sbt plugins to Maven Central like a normal library, no custom
-setup required. It is not necessary to publish sbt plugins to Bintray.
+Add the following to the project settings (works only in sbt 1)
+
+```scala
+skip in publish := true
+```
+
+### How do I publish cross-built projects?
+
+Make sure that projects that compile against multiple Scala versions declare the `crossScalaVersions` setting in build.sbt, for example
+```scala
+lazy val core = project.settings(
+  ...
+  crossScalaVersions := List("2.12.6", "2.11.12")
+)
+```
+The command `+publishSigned` (default value for `CI_RELEASE`) will then publish that project for both 2.11 and 2.12.
 
 ### Can I depend on Maven Central releases immediately?
 
@@ -293,33 +303,15 @@ your environment.
 
 ### Does sbt-ci-release work for sbt 0.13?
 
-Yes, but the plugin is not relased for sbt 0.13. The plugin source code is a
+Yes, but the plugin is not released for sbt 0.13. The plugin source code is a
 single file which you can copy-paste into `project/CiReleasePlugin.scala` of
 your 0.13 build. Make sure you also
 `addSbtPlugin(sbt-dynver + sbt-sonatype + sbt-gpg + sbt-git)`.
 
-### CI freezes on "Please enter PGP passphrase (or ENTER to abort):"
+### How do I publish sbt plugins?
 
-Make sure you define the following settings in the top-level of your `build.sbt`
-
-```scala
-inScope(Global)(List(
-  PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
-))
-```
-
-NOTE. It doesn't seem possible to define this setting outside of `build.sbt`,
-I've tried overriding `globalSettings` and `buildSettings` in auto-plugins but
-it doesn't work. This setting needs to appear in every `build.sbt`. Let me know
-if you find a better workaround!
-
-### How do I disable publishing in certain projects?
-
-Add the following to the project settings (works only in sbt 1)
-
-```scala
-skip in publish := true
-```
+You can publish sbt plugins to Maven Central like a normal library, no custom
+setup required. It is not necessary to publish sbt plugins to Bintray.
 
 ### java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff
 
