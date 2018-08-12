@@ -2,16 +2,15 @@
 
 [![Build Status](https://travis-ci.org/olafurpg/sbt-ci-release.svg?branch=master)](https://travis-ci.org/olafurpg/sbt-ci-release)
 
-This is an sbt plugin to help automate publishing from Travis CI to Sonatype to
-Maven Central.
+This is an sbt plugin to help automate releases to Sonatype and Maven Central from Travis CI
 
 - git tag pushes are published as regular releases to Maven Central
 - merge into master commits are published as -SNAPSHOT with a unique version
   number for every commit
 
 Beware that publishing from Travis CI requires you to expose Sonatype
-credentials as secret environment variables in Travis CI jobs. However, note
-that secret environment variables are not accessible during pull requests.
+credentials as secret environment variables in Travis CI jobs. However,
+secret environment variables are not accessible during pull requests.
 
 Let's get started!
 
@@ -21,7 +20,7 @@ Let's get started!
 - [sbt](#sbt)
 - [GPG](#gpg)
 - [Travis](#travis)
-- [Publish](#publish)
+- [Git](#git)
 - [FAQ](#faq)
 - [Alternatives](#alternatives)
 
@@ -216,7 +215,7 @@ Notes:
 
 ![build__48_-_olafurpg_sbt-ci-release_-_travis_ci](https://user-images.githubusercontent.com/1408093/41810442-a44ef526-76fe-11e8-92f4-4c4b61af4d38.jpg)
 
-## Publish
+## Git
 
 We're all set! Time to manually try out the new setup
 
