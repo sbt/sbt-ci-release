@@ -72,6 +72,10 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override def projectSettings: Seq[Def.Setting[_]] = List(
+    publishConfiguration :=
+      publishConfiguration.value.withOverwrite(true),
+    publishLocalConfiguration :=
+      publishLocalConfiguration.value.withOverwrite(true),
     publishTo := sonatypePublishTo.value
   )
 
