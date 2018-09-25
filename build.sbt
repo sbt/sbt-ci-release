@@ -24,8 +24,6 @@ lazy val plugin = project
   .settings(
     moduleName := "sbt-ci-release",
     sbtPlugin := true,
-    scriptedBufferLog := false,
-    scriptedLaunchOpts += s"-Dplugin.version=${version.value}",
     addSbtPlugin("com.dwijnand" % "sbt-dynver" % "3.0.0"),
     addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.3"),
