@@ -333,6 +333,12 @@ repository. If you pushed a tag, make sure the tag version number starts with
 `v`. This error can happen if you tag with the version `0.1.0` instead of
 `v0.1.0`.
 
+### java.io.IOException: Access to URL was refused by the server: Unauthorized
+
+Make sure that `SONATYPE_PASSWORD` uses proper escaping if it contains special
+characters as documented on
+[Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
+
 ### Failed: signature-staging, failureMessage:Missing Signature:
 
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
