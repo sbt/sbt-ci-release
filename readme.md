@@ -2,15 +2,16 @@
 
 [![Build Status](https://travis-ci.org/olafurpg/sbt-ci-release.svg?branch=master)](https://travis-ci.org/olafurpg/sbt-ci-release)
 
-This is an sbt plugin to help automate releases to Sonatype and Maven Central from Travis CI
+This is an sbt plugin to help automate releases to Sonatype and Maven Central
+from Travis CI
 
 - git tag pushes are published as regular releases to Maven Central
 - merge into master commits are published as -SNAPSHOT with a unique version
   number for every commit
 
 Beware that publishing from Travis CI requires you to expose Sonatype
-credentials as secret environment variables in Travis CI jobs. However,
-secret environment variables are not accessible during pull requests.
+credentials as secret environment variables in Travis CI jobs. However, secret
+environment variables are not accessible during pull requests.
 
 Let's get started!
 
@@ -33,8 +34,8 @@ https://central.sonatype.org/pages/ossrh-guide.html to create a Sonatype account
 and make sure you have publishing rights for a domain name. This is a one-time
 setup per domain name.
 
-If you don't have a domain name, you can use `com.github.<@your_username>`.
-Here is a template you can use to write the Sonatype issue:
+If you don't have a domain name, you can use `com.github.<@your_username>`. Here
+is a template you can use to write the Sonatype issue:
 
 ```
 Title:
@@ -159,16 +160,18 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://oss.sonatype.org/
 - `SONATYPE_USERNAME`: The email you use to log into https://oss.sonatype.org/
-- (optional) `CI_RELEASE`: the command to publish all artifacts for stable releases. Defaults to `+publishSigned` if not provided.
-- (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a SNAPSHOT releases. Defaults to `+publish` if not provided.
+- (optional) `CI_RELEASE`: the command to publish all artifacts for stable
+  releases. Defaults to `+publishSigned` if not provided.
+- (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
+  SNAPSHOT releases. Defaults to `+publish` if not provided.
 
 ### .travis.yml
 
 Next, update `.travis.yml` to trigger `ci-release` on successful merge into
 master and on tag push. There are many ways to do this, but I recommend using
 [Travis "build stages"](https://docs.travis-ci.com/user/build-stages/). It's not
-necessary to use build stages but they make it easy to avoid publishing the
-same module multiple times from parallel jobs.
+necessary to use build stages but they make it easy to avoid publishing the same
+module multiple times from parallel jobs.
 
 - First, ensure that git tags are always fetched so that sbt-dynver can pick up
   the correct `version`
@@ -204,8 +207,8 @@ jobs:
 
 Notes:
 
-- for a complete example of the Travis configuration, see the [.travis.yml in
-  this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
+- for a complete example of the Travis configuration, see the
+  [.travis.yml in this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
   after both `TEST="formatting"` and `TEST="compile"`. As long as you make sure
   you don't publish the same module multiple times, you can use any Travis
@@ -250,14 +253,18 @@ skip in publish := true
 
 ### How do I publish cross-built projects?
 
-Make sure that projects that compile against multiple Scala versions declare the `crossScalaVersions` setting in build.sbt, for example
+Make sure that projects that compile against multiple Scala versions declare the
+`crossScalaVersions` setting in build.sbt, for example
+
 ```scala
 lazy val core = project.settings(
   ...
   crossScalaVersions := List("2.12.6", "2.11.12")
 )
 ```
-The command `+publishSigned` (default value for `CI_RELEASE`) will then publish that project for both 2.11 and 2.12.
+
+The command `+publishSigned` (default value for `CI_RELEASE`) will then publish
+that project for both 2.11 and 2.12.
 
 ### Can I depend on Maven Central releases immediately?
 
@@ -315,7 +322,9 @@ setup required. It is not necessary to publish sbt plugins to Bintray.
 ### java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff
 
 - Make sure you exported the correct `LONG_ID` for the gpg key.
-- Make sure the base64 exported secret GPG key is a single line (not line wrapped). If you use the GNU coreutils `base64` (default on Ubuntu), pass in the `-w0` flag to disable line wrapping.
+- Make sure the base64 exported secret GPG key is a single line (not line
+  wrapped). If you use the GNU coreutils `base64` (default on Ubuntu), pass in
+  the `-w0` flag to disable line wrapping.
 
 ### java.io.IOException: PUT operation to URL https://oss.sonatype.org/content/repositories/snapshots 400: Bad Request
 
@@ -327,11 +336,10 @@ repository. If you pushed a tag, make sure the tag version number starts with
 ### Failed: signature-staging, failureMessage:Missing Signature:
 
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
-This failure can happen in case you push a git tag immediately after merging
-a branch into master. A manual workaround is to log into https://oss.sonatype.org/
-and drop the failing repository from the web UI.
-Alternatively, you can run `sonatypeDrop <staging-repo-id>` from the sbt shell instead
-of using the web UI.
+This failure can happen in case you push a git tag immediately after merging a
+branch into master. A manual workaround is to log into https://oss.sonatype.org/
+and drop the failing repository from the web UI. Alternatively, you can run
+`sonatypeDrop <staging-repo-id>` from the sbt shell instead of using the web UI.
 
 ## Alternatives
 
