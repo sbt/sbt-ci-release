@@ -161,7 +161,7 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
   https://oss.sonatype.org/. If the password contains bash special characters,
   make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
-- `SONATYPE_USERNAME`: The email you use to log into https://oss.sonatype.org/
+- `SONATYPE_USERNAME`: The username you use to log into https://oss.sonatype.org/
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
