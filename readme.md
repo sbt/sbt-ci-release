@@ -130,9 +130,9 @@ gpg --armor --export $LONG_ID | pbcopy
 gpg --armor --export $LONG_ID | xclip
 ```
 
-and post the signature to a keyserver: https://pgp.mit.edu/
+and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
 
-![mit_pgp_key_server](https://user-images.githubusercontent.com/1408093/41208114-b8c89dce-6d1f-11e8-9280-9ab2b70bb0d7.jpg)
+![Ubuntu Keyserver](https://user-images.githubusercontent.com/1408093/47999702-ac7fac80-e103-11e8-95f5-868e934f90c0.png)
 
 ## Travis
 
