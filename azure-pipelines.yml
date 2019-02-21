@@ -2,7 +2,7 @@ trigger:
 - master
 pool:
   vmImage: 'Ubuntu-16.04'
-container: 'travisci/ci-amethyst:latest'
+container: 'travisci/ci-amethyst:packer-1513010293-3f2fb39'
 steps:
 - script: sbt test
   displayName: 'Run tests'
