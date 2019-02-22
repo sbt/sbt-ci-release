@@ -3,13 +3,10 @@ trigger:
 pool:
   vmImage: 'Ubuntu-16.04'
 container: 'hseeberger/scala-sbt:8u181_2.12.8_1.2.8'
+variables:
+  - group: sonatype
 steps:
 - script: sbt test
   displayName: 'Run tests'
 - script: sbt ci-release
   displayName: 'Publish to Sonatype'
-  env:
-    PGP_SECRET: $(PGP_SECRET)
-    PGP_PASSPHRASE: $(PGP_PASPHRASE)
-    SONATYPE_USERNAME: $(SONATYPE_USERNAME)
-    SONATYPE_PASSWORD: $(SONATYPE_PASSWORD)
