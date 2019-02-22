@@ -10,9 +10,9 @@ steps:
 - script: sbt test
   displayName: 'Run tests'
 - script: |
-    export SONATYPE_USERNAME=$(sonatype.username)
-    export SONATYPE_PASSWORD=$(sonatype.password)
-    export PGP_SECRET=$(pgp.secret)
-    export PGP_PASSPHRASE=$(pgp.passphrase)
+    export SONATYPE_USERNAME="$(sonatype.username)"
+    export SONATYPE_PASSWORD="$(sonatype.password)"
+    export PGP_PASSPHRASE="$(pgp.passphrase)"
+    export PGP_SECRET="$(pgp.secret)""
     sbt ci-release
   displayName: 'Publish to Sonatype'
