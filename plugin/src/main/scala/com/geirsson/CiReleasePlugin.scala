@@ -43,8 +43,8 @@ object CiReleasePlugin extends AutoPlugin {
   def setupGpg(): Unit = {
     val secret = sys.env("PGP_SECRET")
     if (isAzure) {
-      println(secret)
-      println(sys.env("PGP_PASSPHRASE"))
+      // base64 encoded gpg secrets are too large for Azure variables but
+      // they fit within the 4k limit when compressed.
       Files.write(Paths.get("gpg.zip"), Base64.getDecoder.decode(secret))
       s"unzip gpg.zip".!
       "gpg --import gpg.key".!
