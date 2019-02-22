@@ -47,7 +47,7 @@ object CiReleasePlugin extends AutoPlugin {
       s"unzip gpg.zip".!
       "gpg --import gpg.key".!
     } else {
-      (s"echo ${secret}" #| "base64 --decode" #| "gpg --import").!
+      (s"echo $secret" #| "base64 --decode" #| "gpg --import").!
     }
   }
 
@@ -66,9 +66,9 @@ object CiReleasePlugin extends AutoPlugin {
       } else {
         println(
           s"Running ci-release.\n" +
-            s"  TRAVIS_SECURE_ENV_VARS=${isTravisSecure}\n" +
-            s"  TRAVIS_BRANCH=${travisBranch}\n" +
-            s"  TRAVIS_TAG=${travisTag}"
+            s"  TRAVIS_SECURE_ENV_VARS=$isTravisSecure\n" +
+            s"  TRAVIS_BRANCH=$travisBranch\n" +
+            s"  TRAVIS_TAG=$travisTag"
         )
         setupGpg()
         if (!isTravisTag) {
