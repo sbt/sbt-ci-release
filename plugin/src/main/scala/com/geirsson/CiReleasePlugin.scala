@@ -20,9 +20,20 @@ object CiReleasePlugin extends AutoPlugin {
     JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin && Sonatype
 
   def isTravisTag: Boolean =
-    Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty)
+    Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
+      Option(System.getenv("BUILD_SOURCEBRANCH"))
+        .exists(_.startsWith("refs/tags"))
   def isTravisSecure: Boolean =
-    System.getenv("TRAVIS_SECURE_ENV_VARS") == "true"
+    System.getenv("TRAVIS_SECURE_ENV_VARS") == "true" ||
+      System.getenv("BUILD_REASON") == "IndividualCI"
+  def travisTag: String =
+    Option(System.getenv("TRAVIS_TAG"))
+      .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
+      .getOrElse("<unknown>")
+  def travisBranch: String =
+    Option(System.getenv("TRAVIS_BRANCH"))
+      .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
+      .getOrElse("<unknown>")
 
   def setupGpg(): Unit = {
     (s"echo ${sys.env("PGP_SECRET")}" #| "base64 --decode" #| "gpg --import").!
@@ -44,8 +55,8 @@ object CiReleasePlugin extends AutoPlugin {
         println(
           s"Running ci-release.\n" +
             s"  TRAVIS_SECURE_ENV_VARS=${sys.env("TRAVIS_SECURE_ENV_VARS")}\n" +
-            s"  TRAVIS_BRANCH=${sys.env("TRAVIS_BRANCH")}\n" +
-            s"  TRAVIS_TAG=${sys.env("TRAVIS_TAG")}"
+            s"  TRAVIS_BRANCH=${travisBranch}\n" +
+            s"  TRAVIS_TAG=${travisTag}"
         )
         setupGpg()
         if (!isTravisTag) {
