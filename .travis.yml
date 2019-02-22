@@ -13,8 +13,9 @@ jobs:
       script: ./bin/scalafmt --test
     - env: TEST="compile"
       script: sbt compile
-    - stage: release
-      script: sbt ci-release
+    # Disabled while testing Azure
+    # - stage: release
+    #   script: sbt ci-release
 
 cache:
   directories:
