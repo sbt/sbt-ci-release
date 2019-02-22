@@ -1,8 +1,11 @@
 trigger:
 - master
+
 pool:
   vmImage: 'Ubuntu-16.04'
+
 container: 'hseeberger/scala-sbt:8u181_2.12.8_1.2.8'
+
 steps:
 - displayName: 'Run tests'
   script: sbt test
