@@ -7,12 +7,12 @@ pool:
 container: 'hseeberger/scala-sbt:8u181_2.12.8_1.2.8'
 
 steps:
-- displayName: 'Run tests'
-  script: sbt test
-- displayName: 'Publish to Sonatype'
-  script: |
+- script: sbt test
+  displayName: 'Run tests'
+- script: |
     export SONATYPE_USERNAME=$(sonatype.username)
     export SONATYPE_PASSWORD=$(sonatype.password)
     export PGP_SECRET=$(pgp.secret)
     export PGP_PASSPHRASE=$(pgp.passphrase)
     sbt ci-release
+  displayName: 'Publish to Sonatype'
