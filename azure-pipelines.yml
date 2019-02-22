@@ -3,6 +3,13 @@ trigger:
 pool:
   vmImage: 'Ubuntu-16.04'
 container: 'hseeberger/scala-sbt:8u181_2.12.8_1.2.8'
-steps:
-- script: sbt test
-  displayName: 'Run tests'
+jobs:
+- job: build
+  steps:
+  - displayName: 'Run tests'
+    script: sbt test
+- job: publish
+  dependsOn: build
+  steps:
+  - displayName: 'Publish to Sonatype'
+    script: sbt ci-release
