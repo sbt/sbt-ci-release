@@ -11,7 +11,7 @@ steps:
 - script: sbt ci-release
   displayName: 'Publish to Sonatype'
   env:
-    PGP_SECRET: $(pgp.secret)
-    PGP_PASSPHRASE: $(pgp.passphrase)
     SONATYPE_USERNAME: $(sonatype.username)
     SONATYPE_PASSWORD: $(sonatype.password)
+    PGP_SECRET: $(pgp.secret)
+    PGP_PASSPHRASE: $(pgp.passphrase)
