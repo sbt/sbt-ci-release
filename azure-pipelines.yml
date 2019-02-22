@@ -12,7 +12,7 @@ steps:
 - script: |
     export SONATYPE_USERNAME="$(sonatype.username)"
     export SONATYPE_PASSWORD="$(sonatype.password)"
-    export PGP_PASSPHRASE="$(pgp.passphrase)"
-    export PGP_SECRET="$(pgp.secret)"
+    export PGP_PASSPHRASE="$(gpg.passphrase)"
+    export PGP_SECRET="$(gpg.secret)"
     sbt ci-release
   displayName: 'Publish to Sonatype'
