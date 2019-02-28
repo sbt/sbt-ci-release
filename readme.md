@@ -45,6 +45,14 @@ Hi, I would like to publish under the groupId: com.github.olafurpg.
 It's my GitHub account https://github.com/olafurpg/
 ```
 
+### Optional: create user tokens
+
+If you prefer not to save your actual username and password in the Travis CI settings below, generate your user tokens:
+- login to https://oss.sonatype.org,
+- click your username in the top right, then profiles,
+- in the tab that was opened, click on the top left dropdown, and select "User Token",
+- click "Access User Token", and save the name and password parts of the token somewhere safe.
+
 ## sbt
 
 Next, install this plugin in `project/plugins.sbt`
@@ -158,10 +166,12 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 ```
 
 - `SONATYPE_PASSWORD`: The password you use to log into
-  https://oss.sonatype.org/. If the password contains bash special characters,
+  https://oss.sonatype.org/. Alternatively, the password part of the user token if you generated one above.
+  If the password contains bash special characters,
   make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
-- `SONATYPE_USERNAME`: The username you use to log into https://oss.sonatype.org/
+- `SONATYPE_USERNAME`: The username you use to log into https://oss.sonatype.org/.
+ Alternatively, the name part of the user token if you generated one above.
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
