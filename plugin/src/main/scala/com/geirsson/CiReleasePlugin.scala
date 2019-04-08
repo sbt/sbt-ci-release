@@ -89,7 +89,7 @@ object CiReleasePlugin extends AutoPlugin {
         } else {
           println("Tag push detected, publishing a stable release")
           sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
-            s"sonatypeRelease" ::
+            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeRelease") ::
             currentState
         }
       }
