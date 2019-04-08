@@ -6,10 +6,3 @@ container: 'hseeberger/scala-sbt:8u181_2.12.8_1.2.8'
 steps:
 - script: sbt test
   displayName: 'Run tests'
-- script: |
-    export SONATYPE_USERNAME="$(sonatype.username)"
-    export SONATYPE_PASSWORD="$(sonatype.password)"
-    export PGP_PASSPHRASE="$(gpg.passphrase)"
-    export PGP_SECRET="$(gpg.secret)"
-    sbt ci-release
-  displayName: 'Publish to Sonatype'
