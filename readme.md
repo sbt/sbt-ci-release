@@ -147,6 +147,7 @@ and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
 Next, open the "Settings" panel for your project on Travis CI, for example
 https://travis-ci.org/scalameta/sbt-scalafmt/settings.
 
+Make sure that "Build pushed branches" setting is enabled.  
 Define four secret variables
 
 ![](https://user-images.githubusercontent.com/1408093/41207402-bbb3970a-6d15-11e8-8772-000cc194ee92.png)
