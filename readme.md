@@ -201,7 +201,7 @@ before_install:
 stages:
   - name: test
   - name: release
-    if: ((branch = master AND type = push) OR (tag IS present)) AND (repo = your-github-id-or-organization-id/your-repo-name)
+    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 ```
 
 - Lastly, define your build matrix with `ci-release` at the bottom, for example:
