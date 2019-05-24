@@ -126,7 +126,7 @@ below. The ID will look something like (a)
 `6E8ED79B03AD527F1B281169D28FC818985732D9` or something like (b) `A4C9 75D9 9C05 E4C7 2163  4BBD ACA8 EB32 0BFE FE2C` (in which case delete the spaces to make it look like (a)).
 
 ```bash
-export LONG_ID=6E8ED79B03AD527F1B281169D28FC818985732D9
+LONG_ID=6E8ED79B03AD527F1B281169D28FC818985732D9
 ```
 
 Next, copy the public gpg signature
