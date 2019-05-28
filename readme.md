@@ -123,7 +123,7 @@ uid                      $PROJECT_NAME bot <$EMAIL>
 
 Take note of `$LONG_ID`, make sure to replace this ID from the code examples
 below. The ID will look something like (a)
-`6E8ED79B03AD527F1B281169D28FC818985732D9` or something like (b) `A4C9 75D9 9C05 E4C7 2163  4BBD ACA8 EB32 0BFE FE2C` (in which case delete the spaces to make it look like (a)).
+`6E8ED79B03AD527F1B281169D28FC818985732D9` or something like (b) `A4C9 75D9 9C05 E4C7 2163  4BBD ACA8 EB32 0BFE FE2C` (in which case delete the spaces to make it look like (a)). A command like this one should do:
 
 ```bash
 LONG_ID=6E8ED79B03AD527F1B281169D28FC818985732D9
