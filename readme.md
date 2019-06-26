@@ -147,7 +147,7 @@ and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
 Next, open the "Settings" panel for your project on Travis CI, for example
 https://travis-ci.org/scalameta/sbt-scalafmt/settings.
 
-Make sure that "Build pushed branches" setting is enabled.  
+Make sure that "Build pushed branches" setting is enabled.
 Define four secret variables
 
 ![](https://user-images.githubusercontent.com/1408093/41207402-bbb3970a-6d15-11e8-8772-000cc194ee92.png)
@@ -210,9 +210,11 @@ stages:
 jobs:
   include:
     # stage="test" if no stage is specified
-    - env: TEST="compile"
+    -
+      name: compile
       script: sbt compile
-    - env: TEST="formatting"
+    -
+      name: formatting
       script: ./bin/scalafmt --test
     # run ci-release only if previous stages passed
     - stage: release
@@ -224,10 +226,10 @@ Notes:
 - for a complete example of the Travis configuration, see the
   [.travis.yml in this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
-  after both `TEST="formatting"` and `TEST="compile"`. As long as you make sure
+  after both `formatting` and `compile`. As long as you make sure
   you don't publish the same module multiple times, you can use any Travis
   configuration you like
-- the `env: TEST="compile"` part is optional but it makes it easy to distinguish
+- the `name: compile` part is optional but it makes it easy to distinguish
   different jobs in the Travis UI
 
 ![build__48_-_olafurpg_sbt-ci-release_-_travis_ci](https://user-images.githubusercontent.com/1408093/41810442-a44ef526-76fe-11e8-92f4-4c4b61af4d38.jpg)
