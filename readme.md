@@ -162,6 +162,8 @@ Define four secret variables
 gpg --armor --export-secret-keys $LONG_ID | base64 | pbcopy
 # Ubuntu (assuming GNU base64)
 gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip
+# Arch
+gpg --armor --export-secret-keys $LONG_ID | base64 | sed -z 's;\n;;g' | xclip -selection clipboard -i
 # FreeBSD (assuming BSD base64)
 gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 ```
