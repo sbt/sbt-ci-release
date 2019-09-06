@@ -89,7 +89,7 @@ object CiReleasePlugin extends AutoPlugin {
         } else {
           println("Tag push detected, publishing a stable release")
           sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
-            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeRelease") ::
+            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
             currentState
         }
       }
@@ -101,7 +101,7 @@ object CiReleasePlugin extends AutoPlugin {
       publishConfiguration.value.withOverwrite(true),
     publishLocalConfiguration :=
       publishLocalConfiguration.value.withOverwrite(true),
-    publishTo := sonatypePublishTo.value
+    publishTo := sonatypePublishToBundle.value
   )
 
   def isSnapshotVersion(state: State): Boolean = {
