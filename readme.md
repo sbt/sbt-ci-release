@@ -179,7 +179,7 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
   SNAPSHOT releases. Defaults to `+publish` if not provided.
-- (optional) `CI_SONATYPE_RELEASE`: the command called to close and promote the staged repository. Useful when, for example, also dealing with non-sbt projects to change to `sonatypeReleaseAll`. Defaults to `sonatypeRelease` if not provided.
+- (optional) `CI_SONATYPE_RELEASE`: the command called to close and promote the staged repository. Useful when, for example, also dealing with non-sbt projects to change to `sonatypeReleaseAll`. Defaults to `sonatypeBundleRelease` if not provided.
 
 ### .travis.yml
 
