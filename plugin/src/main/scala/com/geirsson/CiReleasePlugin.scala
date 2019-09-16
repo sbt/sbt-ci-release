@@ -73,10 +73,14 @@ object CiReleasePlugin extends AutoPlugin {
             s"  TRAVIS_TAG=$travisTag"
         )
         setupGpg()
+        // https://github.com/olafurpg/sbt-ci-release/issues/64
+        val reloadKeyFiles =
+          "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
         if (!isTravisTag) {
           if (isSnapshotVersion(currentState)) {
             println(s"No tag push, publishing SNAPSHOT")
-            sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
+            reloadKeyFiles ::
+              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
               currentState
           } else {
             // Happens when a tag is pushed right after merge causing the master branch
@@ -88,7 +92,8 @@ object CiReleasePlugin extends AutoPlugin {
           }
         } else {
           println("Tag push detected, publishing a stable release")
-          sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+          reloadKeyFiles ::
+            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
             currentState
         }
