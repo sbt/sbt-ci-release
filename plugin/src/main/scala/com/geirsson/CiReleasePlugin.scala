@@ -74,7 +74,8 @@ object CiReleasePlugin extends AutoPlugin {
         )
         setupGpg()
         // https://github.com/olafurpg/sbt-ci-release/issues/64
-        val reloadKeyFiles = "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
+        val reloadKeyFiles =
+          "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
         if (!isTravisTag) {
           if (isSnapshotVersion(currentState)) {
             println(s"No tag push, publishing SNAPSHOT")
