@@ -23,6 +23,7 @@ Let's get started!
 - [Travis](#travis)
 - [Git](#git)
 - [FAQ](#faq)
+- [Adopters](#adopters)
 - [Alternatives](#alternatives)
 
 <!-- /TOC -->
@@ -277,12 +278,12 @@ Make sure that projects that compile against multiple Scala versions declare the
 ```scala
 lazy val core = project.settings(
   ...
-  crossScalaVersions := List("2.12.6", "2.11.12")
+  crossScalaVersions := List("2.13.1", "2.12.10", "2.11.12")
 )
 ```
 
 The command `+publishSigned` (default value for `CI_RELEASE`) will then publish
-that project for both 2.11 and 2.12.
+that project for 2.11, 2.12 and 2.13.
 
 ### Can I depend on Maven Central releases immediately?
 
@@ -290,7 +291,7 @@ Yes! As soon as CI "closes" the staging repository you can depend on those
 artifacts with
 
 ```scala
-resolvers += Resolver.sonatypeRepo("releases")
+resolvers += Resolver.sonatypeRepo("public")
 ```
 
 (optional) Use the
@@ -298,7 +299,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 interface to check if a release was successful without opening sbt
 
 ```bash
-coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0 -r sonatype:releases
+coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0 -r sonatype:public
 ```
 
 ### How do I depend on the SNAPSHOT releases?
@@ -365,11 +366,30 @@ branch into master. A manual workaround is to log into https://oss.sonatype.org/
 and drop the failing repository from the web UI. Alternatively, you can run
 `sonatypeDrop <staging-repo-id>` from the sbt shell instead of using the web UI.
 
+## Adopters
+
+Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
+project? [Add it in a
+PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
+
+- [almond-sh/almond](https://github.com/almond-sh/almond/)
+- [coursier/coursier](https://github.com/coursier/coursier/)
+- [ekrich/sconfig](https://github.com/ekrich/sconfig/)
+- [olafurpg/metaconfig](https://github.com/olafurpg/metaconfig/)
+- [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
+- [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
+- [scalameta/metabrowse](https://github.com/scalameta/metabrowse/)
+- [scalameta/metals](https://github.com/scalameta/metals/)
+- [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
+- [typelevel/paiges](https://github.com/typeleve/paiges/)
+
 ## Alternatives
 
 There exist great alternatives to sbt-ci-release that may work better for your
 setup.
 
+- [sbt-ci-release-early](https://github.com/ShiftLeftSecurity/sbt-ci-release-early):
+  very similar to sbt-ci-release except doesn't use SNAPSHOT versions.
 - [sbt-release-early](https://github.com/scalacenter/sbt-release-early):
   additionally supports publishing to Bintray and other CI environments than
   Travis.
