@@ -8,3 +8,4 @@ sdk install java $(sdk list java | grep -o "$ADOPTOPENJDK\.[0-9\.]*hs-adpt" | he
 unset JAVA_HOME
 java -Xmx32m -version
 git fetch --tags
+echo 'source "$HOME/.sdkman/bin/sdkman-init.sh"' >> $HOME/.bash_profile
