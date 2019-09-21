@@ -12,11 +12,11 @@ inThisBuild(
         "olafurpg@gmail.com",
         url("https://geirsson.com")
       )
-    ),
-    resolvers += Resolver.sonatypeRepo("releases"),
-    scalaVersion := "2.12.8"
+    )
   )
 )
+
+onLoadMessage := s"Welcome to sbt-ci-release ${version.value}"
 
 skip in publish := true // don't publish the root project
 
@@ -24,6 +24,7 @@ lazy val plugin = project
   .settings(
     moduleName := "sbt-ci-release",
     sbtPlugin := true,
+    sbtVersion in pluginCrossBuild := "1.0.4",
     addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0"),
     addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.7"),

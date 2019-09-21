@@ -22,23 +22,29 @@ object CiReleasePlugin extends AutoPlugin {
   override def requires =
     JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin && Sonatype
 
+  def isTravisSecure: Boolean =
+    System.getenv("TRAVIS_SECURE_ENV_VARS") == "true" ||
+      System.getenv("BUILD_REASON") == "IndividualCI" ||
+      System.getenv("PGP_SECRET") != null
   def isTravisTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("BUILD_SOURCEBRANCH"))
+      .orElse(Option(System.getenv("GITHUB_REF")))
         .exists(_.startsWith("refs/tags"))
-  def isTravisSecure: Boolean =
-    System.getenv("TRAVIS_SECURE_ENV_VARS") == "true" ||
-      System.getenv("BUILD_REASON") == "IndividualCI"
   def travisTag: String =
     Option(System.getenv("TRAVIS_TAG"))
       .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
+      .orElse(Option(System.getenv("GITHUB_REF")))
       .getOrElse("<unknown>")
   def travisBranch: String =
     Option(System.getenv("TRAVIS_BRANCH"))
       .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
+      .orElse(Option(System.getenv("GITHUB_REF")))
       .getOrElse("<unknown>")
   def isAzure: Boolean =
     System.getenv("TF_BUILD") == "True"
+  def isGithub: Boolean =
+    System.getenv("GITHUB_ACTION") != null
 
   def setupGpg(): Unit = {
     val secret = sys.env("PGP_SECRET")
@@ -53,12 +59,12 @@ object CiReleasePlugin extends AutoPlugin {
     }
   }
 
-  override def buildSettings: Seq[Def.Setting[_]] = List(
+  override lazy val buildSettings: Seq[Def.Setting[_]] = List(
     dynverSonatypeSnapshots := true,
     pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
   )
 
-  override def globalSettings: Seq[Def.Setting[_]] = List(
+  override lazy val globalSettings: Seq[Def.Setting[_]] = List(
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
@@ -68,9 +74,7 @@ object CiReleasePlugin extends AutoPlugin {
       } else {
         println(
           s"Running ci-release.\n" +
-            s"  TRAVIS_SECURE_ENV_VARS=$isTravisSecure\n" +
-            s"  TRAVIS_BRANCH=$travisBranch\n" +
-            s"  TRAVIS_TAG=$travisTag"
+            s"  branch=$travisBranch"
         )
         setupGpg()
         // https://github.com/olafurpg/sbt-ci-release/issues/64
@@ -101,7 +105,7 @@ object CiReleasePlugin extends AutoPlugin {
     }
   )
 
-  override def projectSettings: Seq[Def.Setting[_]] = List(
+  override lazy val projectSettings: Seq[Def.Setting[_]] = List(
     publishConfiguration :=
       publishConfiguration.value.withOverwrite(true),
     publishLocalConfiguration :=
