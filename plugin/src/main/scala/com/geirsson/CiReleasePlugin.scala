@@ -47,7 +47,7 @@ object CiReleasePlugin extends AutoPlugin {
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
 
-  def gpgCommand: String = Option(System.getenv("GPG_COMMAND")).getOrElse("gpg2")
+  def gpgCommand: String = Option(System.getenv("GPG_COMMAND")).getOrElse("gpg")
 
   def setupGpg(): Unit = {
     val secret = sys.env("PGP_SECRET")
@@ -86,6 +86,12 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
+    credentials += Credentials(
+      "GnuPG Key ID",
+      "gpg",
+      "35BE4AE7A6DA67BCC5ADD5A484D2F8268F519B12", // key identifier
+      "ignored" // this field is ignored; passwords are supplied by pinentry
+    ),
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
