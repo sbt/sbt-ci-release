@@ -11,6 +11,15 @@ jobs:
       # - uses: olafurpg/setup-scala@v2
       - name: Publish
         run: |
+          gpg --version
+          wget https://gnupg.org/ftp/gcrypt/gnupg/gnupg-1.4.23.tar.bz2
+          bzip2 -d gnupg-1.4.23.tar.bz2
+          cd gnupg-1.4.23
+          ./configure
+          make
+          export PATH="$(pwd):$PATH"
+          cd ..
+          gpg --version
           mkdir -p ~/.gnupg/private-keys-v1.d
           chmod -R 700 ~/.gnupg
           export GPG_TTY=$(tty)
