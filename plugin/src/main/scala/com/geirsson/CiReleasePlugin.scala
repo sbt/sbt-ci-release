@@ -61,6 +61,8 @@ object CiReleasePlugin extends AutoPlugin {
       (s"echo $secret" #| "base64 --decode" #| s"$gpgCommand --import").!
     }
     installDefaultKey()
+    val exit = List("gpgconf", "--kill", "gpg-agent").!
+    println(s"gpgconf --kill gpg-agent exit: $exit")
   }
 
   def installDefaultKey(): Unit = {
@@ -86,12 +88,6 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
-    credentials += Credentials(
-      "GnuPG Key ID",
-      "gpg",
-      "35BE4AE7A6DA67BCC5ADD5A484D2F8268F519B12", // key identifier
-      "ignored" // this field is ignored; passwords are supplied by pinentry
-    ),
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
