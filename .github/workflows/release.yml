@@ -21,10 +21,7 @@ jobs:
           export PATH="$(pwd)/g10:$PATH"
           cd ..
           gpg --version
-          mkdir -p ~/.gnupg/private-keys-v1.d
-          chmod -R 700 ~/.gnupg
-          export GPG_TTY=$(tty)
-          echo $PGP_SECRET | base64 --decode | strace -o /tmp/foo gpg --import --yes --always-trust
+          echo $PGP_SECRET | base64 --decode | strace -o /tmp/foo gpg --import
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
