@@ -47,6 +47,8 @@ object CiReleasePlugin extends AutoPlugin {
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
 
+  def gpgCommand: String = Option(System.getenv("GPG_COMMAND")).getOrElse("gpg2")
+
   def setupGpg(): Unit = {
     val secret = sys.env("PGP_SECRET")
     if (isAzure) {
@@ -54,9 +56,9 @@ object CiReleasePlugin extends AutoPlugin {
       // they fit within the 4k limit when compressed.
       Files.write(Paths.get("gpg.zip"), Base64.getDecoder.decode(secret))
       s"unzip gpg.zip".!
-      "gpg --import gpg.key".!
+      s"$gpgCommand --import gpg.key".!
     } else {
-      (s"echo $secret" #| "base64 --decode" #| "gpg --import").!
+      (s"echo $secret" #| "base64 --decode" #| s"$gpgCommand --import").!
     }
     installDefaultKey()
   }
@@ -64,7 +66,7 @@ object CiReleasePlugin extends AutoPlugin {
   def installDefaultKey(): Unit = {
     val gnupg = Paths.get(System.getProperty("user.home")).resolve(".gnupg")
     Files.createDirectories(gnupg)
-    val uid = List("gpg", "--list-keys").!!.linesIterator
+    val uid = List(gpgCommand, "--list-keys").!!.linesIterator
       .filter(_.startsWith(" "))
       .toList
       .head
