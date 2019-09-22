@@ -47,13 +47,7 @@ object CiReleasePlugin extends AutoPlugin {
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
 
-  def gpgCommand: String = Option(System.getenv("GPG_COMMAND")).getOrElse("gpg")
-
-  def homedir = Paths.get(System.getProperty("user.home"))
-  def gnupg = homedir.resolve(".gnupg")
-
   def setupGpg(): Unit = {
-    println(s"running '$gpgCommand --version'")
     List("gpg", "--version").!
     val secret = sys.env("PGP_SECRET")
     if (isAzure) {
@@ -61,32 +55,10 @@ object CiReleasePlugin extends AutoPlugin {
       // they fit within the 4k limit when compressed.
       Files.write(Paths.get("gpg.zip"), Base64.getDecoder.decode(secret))
       s"unzip gpg.zip".!
-      s"$gpgCommand --import gpg.key".!
+      s"gpg --import gpg.key".!
     } else {
-      val decoded = Base64.getDecoder().decode(secret)
-      val key = Files.write(homedir.resolve("key.asc"), decoded)
-      val exit =
-        s"$gpgCommand --yes --always-trust --import ${key.toAbsolutePath()}".!
-      assert(exit == 0, s"gpg --import failed: $exit")
+      (s"echo $secret" #| "base64 --decode" #| "gpg --import").!
     }
-    installDefaultKey()
-  }
-
-  def installDefaultKey(): Unit = {
-    Files.createDirectories(gnupg)
-    val uid = List(gpgCommand, "--list-keys").!!.linesIterator
-      .filter(_.startsWith(" "))
-      .toList
-      .head
-      .split("\\s+")
-      .filter(_.nonEmpty)
-      .head
-      .trim()
-    println(s"Installing default gpg key '$uid'")
-    Files.write(
-      gnupg.resolve("gpg.conf"),
-      s"default-key $uid\n".getBytes(StandardCharsets.UTF_8)
-    )
   }
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(

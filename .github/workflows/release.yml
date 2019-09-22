@@ -21,7 +21,7 @@ jobs:
           export PATH="$(pwd)/g10:$PATH"
           cd ..
           gpg --version
-          echo $PGP_SECRET | base64 --decode | strace -o /tmp/foo gpg --import
+          csbt ci-release
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
