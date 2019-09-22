@@ -5,6 +5,7 @@ import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.SbtPgp.autoImport._
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.nio.charset.StandardCharsets
 import java.util.Base64
 import sbt.Def
 import sbt.Keys._
@@ -57,10 +58,13 @@ object CiReleasePlugin extends AutoPlugin {
     } else {
       (s"echo $secret" #| "base64 --decode" #| "gpg --import").!
     }
+    installDefaultKey()
   }
 
-  def defaultGpgHex(): String = {
-    List("gpg", "--list-sigs").!!.linesIterator
+  def installDefaultKey(): Unit = {
+    val gnupg = Paths.get(System.getProperty("user.hom")).resolve(".gnugp")
+    Files.createDirectories(gnupg)
+    val uid = List("gpg", "--list-sigs").!!.linesIterator
       .filter(_.startsWith("sig 3"))
       .map(_.stripPrefix("sig 3"))
       .toList
@@ -68,6 +72,12 @@ object CiReleasePlugin extends AutoPlugin {
       .split("\\s+")
       .filter(_.nonEmpty)
       .head
+      .trim()
+    println(s"Installing default gpg key '$uid'")
+    Files.write(
+      gnupg.resolve("gpg.conf"),
+      s"default-key $uid\n".getBytes(StandardCharsets.UTF_8)
+    )
   }
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
@@ -106,10 +116,7 @@ object CiReleasePlugin extends AutoPlugin {
           }
         } else {
           println("Tag push detected, publishing a stable release")
-          val setDefaultGpgKey =
-            s"""set credentials.in(Global) += Credentials("GnuPG Key ID", "gpg", "${defaultGpgHex()}", "ignored")"""
-          setDefaultGpgKey ::
-            reloadKeyFiles ::
+          reloadKeyFiles ::
             sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
             currentState
