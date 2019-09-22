@@ -107,7 +107,7 @@ object CiReleasePlugin extends AutoPlugin {
         } else {
           println("Tag push detected, publishing a stable release")
           val setDefaultGpgKey =
-            s"""set every credentials += Credentials("GnuPG Key ID", "gpg", "${defaultGpgHex()}", "ignored")"""
+            s"""set credentials.in(Global) += Credentials("GnuPG Key ID", "gpg", "${defaultGpgHex()}", "ignored")"""
           setDefaultGpgKey ::
             reloadKeyFiles ::
             sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
