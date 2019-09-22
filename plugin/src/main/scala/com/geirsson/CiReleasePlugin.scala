@@ -62,7 +62,7 @@ object CiReleasePlugin extends AutoPlugin {
   }
 
   def installDefaultKey(): Unit = {
-    val gnupg = Paths.get(System.getProperty("user.hom")).resolve(".gnugp")
+    val gnupg = Paths.get(System.getProperty("user.home")).resolve(".gnugp")
     Files.createDirectories(gnupg)
     val uid = List("gpg", "--list-sigs").!!.linesIterator
       .filter(_.startsWith("sig 3"))
