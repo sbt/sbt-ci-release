@@ -1,8 +1,8 @@
 package com.geirsson
 
 import com.typesafe.sbt.GitPlugin
-import com.typesafe.sbt.SbtPgp
-import com.typesafe.sbt.SbtPgp.autoImport._
+import com.jsuereth.sbtpgp.SbtPgp
+import com.jsuereth.sbtpgp.SbtPgp.autoImport._
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.Base64
@@ -60,8 +60,7 @@ object CiReleasePlugin extends AutoPlugin {
   }
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
-    dynverSonatypeSnapshots := true,
-    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
+    dynverSonatypeSnapshots := true
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
