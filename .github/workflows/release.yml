@@ -24,8 +24,7 @@ jobs:
           mkdir -p ~/.gnupg/private-keys-v1.d
           chmod -R 700 ~/.gnupg
           export GPG_TTY=$(tty)
-          echo $PGP_SECRET | base64 --decode | strace -o /tmp/foo gpg --import --yes --always-trust || true
-          cat /tmp/foo
+          echo $PGP_SECRET | base64 --decode | strace -o /tmp/foo gpg --import --yes --always-trust
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
