@@ -48,11 +48,15 @@ It's my GitHub account https://github.com/olafurpg/
 
 ### Optional: create user tokens
 
-If you prefer not to save your actual username and password in the Travis CI settings below, generate your user tokens:
+If you prefer not to save your actual username and password in the Travis CI
+settings below, generate your user tokens:
+
 - login to https://oss.sonatype.org,
 - click your username in the top right, then profiles,
-- in the tab that was opened, click on the top left dropdown, and select "User Token",
-- click "Access User Token", and save the name and password parts of the token somewhere safe.
+- in the tab that was opened, click on the top left dropdown, and select "User
+  Token",
+- click "Access User Token", and save the name and password parts of the token
+  somewhere safe.
 
 ## sbt
 
@@ -109,7 +113,7 @@ this project.
 gpg --gen-key
 ```
 
-- For real name, use "$PROJECT_NAME bot". For example, in Scalafmt I use
+- For real name, use "\$PROJECT_NAME bot". For example, in Scalafmt I use
   "Scalafmt bot"
 - For email, use your own email address
 - For passphrase, generate a random password with a password manager
@@ -124,7 +128,9 @@ uid                      $PROJECT_NAME bot <$EMAIL>
 
 Take note of `$LONG_ID`, make sure to replace this ID from the code examples
 below. The ID will look something like (a)
-`6E8ED79B03AD527F1B281169D28FC818985732D9` or something like (b) `A4C9 75D9 9C05 E4C7 2163  4BBD ACA8 EB32 0BFE FE2C` (in which case delete the spaces to make it look like (a)). A command like this one should do:
+`6E8ED79B03AD527F1B281169D28FC818985732D9` or something like (b)
+`A4C9 75D9 9C05 E4C7 2163 4BBD ACA8 EB32 0BFE FE2C` (in which case delete the
+spaces to make it look like (a)). A command like this one should do:
 
 ```bash
 LONG_ID=6E8ED79B03AD527F1B281169D28FC818985732D9
@@ -141,15 +147,20 @@ gpg --armor --export $LONG_ID | xclip
 
 and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
 
-![Ubuntu Keyserver](https://user-images.githubusercontent.com/1408093/47999702-ac7fac80-e103-11e8-95f5-868e934f90c0.png)
+1. Select "Submit Key"
+2. Paste in the exported public key
+3. Click on "Submit
+Public Key".
+
+![Ubuntu Keyserver](https://i.imgur.com/njvOpmq.png)
 
 ## Travis
 
 Next, open the "Settings" panel for your project on Travis CI, for example
 https://travis-ci.org/scalameta/sbt-scalafmt/settings.
 
-Make sure that "Build pushed branches" setting is enabled.
-Define four secret variables
+Make sure that "Build pushed branches" setting is enabled. Define four secret
+variables
 
 ![](https://user-images.githubusercontent.com/1408093/41207402-bbb3970a-6d15-11e8-8772-000cc194ee92.png)
 
@@ -170,17 +181,21 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 ```
 
 - `SONATYPE_PASSWORD`: The password you use to log into
-  https://oss.sonatype.org/. Alternatively, the password part of the user token if you generated one above.
-  If the password contains bash special characters,
+  https://oss.sonatype.org/. Alternatively, the password part of the user token
+  if you generated one above. If the password contains bash special characters,
   make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
-- `SONATYPE_USERNAME`: The username you use to log into https://oss.sonatype.org/.
- Alternatively, the name part of the user token if you generated one above.
+- `SONATYPE_USERNAME`: The username you use to log into
+  https://oss.sonatype.org/. Alternatively, the name part of the user token if
+  you generated one above.
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
   SNAPSHOT releases. Defaults to `+publish` if not provided.
-- (optional) `CI_SONATYPE_RELEASE`: the command called to close and promote the staged repository. Useful when, for example, also dealing with non-sbt projects to change to `sonatypeReleaseAll`. Defaults to `sonatypeBundleRelease` if not provided.
+- (optional) `CI_SONATYPE_RELEASE`: the command called to close and promote the
+  staged repository. Useful when, for example, also dealing with non-sbt
+  projects to change to `sonatypeReleaseAll`. Defaults to
+  `sonatypeBundleRelease` if not provided.
 
 ### .travis.yml
 
@@ -213,11 +228,9 @@ stages:
 jobs:
   include:
     # stage="test" if no stage is specified
-    -
-      name: compile
+    - name: compile
       script: sbt compile
-    -
-      name: formatting
+    - name: formatting
       script: ./bin/scalafmt --test
     # run ci-release only if previous stages passed
     - stage: release
@@ -229,9 +242,9 @@ Notes:
 - for a complete example of the Travis configuration, see the
   [.travis.yml in this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
-  after both `formatting` and `compile`. As long as you make sure
-  you don't publish the same module multiple times, you can use any Travis
-  configuration you like
+  after both `formatting` and `compile`. As long as you make sure you don't
+  publish the same module multiple times, you can use any Travis configuration
+  you like
 - the `name: compile` part is optional but it makes it easy to distinguish
   different jobs in the Travis UI
 
@@ -369,8 +382,8 @@ and drop the failing repository from the web UI. Alternatively, you can run
 ## Adopters
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
-project? [Add it in a
-PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
+project?
+[Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
 
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
 - [coursier/coursier](https://github.com/coursier/coursier/)
