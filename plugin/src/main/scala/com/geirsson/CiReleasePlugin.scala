@@ -50,6 +50,8 @@ object CiReleasePlugin extends AutoPlugin {
   def gpgCommand: String = Option(System.getenv("GPG_COMMAND")).getOrElse("gpg")
 
   def setupGpg(): Unit = {
+    println(s"running '$gpgCommand --version'")
+    List("gpg", "--version").!
     val secret = sys.env("PGP_SECRET")
     if (isAzure) {
       // base64 encoded gpg secrets are too large for Azure variables but
@@ -58,11 +60,12 @@ object CiReleasePlugin extends AutoPlugin {
       s"unzip gpg.zip".!
       s"$gpgCommand --import gpg.key".!
     } else {
-      (s"echo $secret" #| "base64 --decode" #| s"$gpgCommand --import").!
+      val decoded = Base64.getDecoder().decode(secret)
+      val key = Files.write(Paths.get("key.gpg"), decoded)
+      val exit = s"$gpgCommand --import ${key.toAbsolutePath()}".!
+      assert(exit == 0, s"gpg --import failed: $exit")
     }
     installDefaultKey()
-    val exit = List("gpgconf", "--kill", "gpg-agent").!
-    println(s"gpgconf --kill gpg-agent exit: $exit")
   }
 
   def installDefaultKey(): Unit = {
