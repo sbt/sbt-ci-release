@@ -12,7 +12,7 @@ jobs:
       - name: Publish
         run: |
           mkdir -p ~/.gnupg/private-keys-v1.d
-          chmod 700 ~/.gnupg/private-keys-v1.d
+          chmod -R 700 ~/.gnupg
           export GPG_TTY=$(tty)
           echo $PGP_SECRET | base64 --decode | gpg --import --yes --always-trust
           gpgconf --kill gpg-agent
