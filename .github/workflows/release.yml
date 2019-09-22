@@ -11,6 +11,7 @@ jobs:
       - uses: olafurpg/setup-scala@v2
       - name: Publish
         run: |
+          export GPG_TTY=$(tty)
           echo $PGP_SECRET | base64 --decode | gpg --import
           gpgconf --kill gpg-agent
           csbt ci-release
