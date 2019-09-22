@@ -14,6 +14,7 @@ jobs:
           gpg --version
           wget https://gnupg.org/ftp/gcrypt/gnupg/gnupg-1.4.23.tar.bz2
           bzip2 -d gnupg-1.4.23.tar.bz2
+          tar xvf gnupg-1.4.23.tar
           cd gnupg-1.4.23
           ./configure
           make
