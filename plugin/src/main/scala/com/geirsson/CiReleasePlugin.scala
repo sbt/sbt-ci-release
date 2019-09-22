@@ -49,6 +49,9 @@ object CiReleasePlugin extends AutoPlugin {
 
   def gpgCommand: String = Option(System.getenv("GPG_COMMAND")).getOrElse("gpg")
 
+  def homedir = Paths.get(System.getProperty("user.home"))
+  def gnupg = homedir.resolve(".gnupg")
+
   def setupGpg(): Unit = {
     println(s"running '$gpgCommand --version'")
     List("gpg", "--version").!
@@ -61,15 +64,15 @@ object CiReleasePlugin extends AutoPlugin {
       s"$gpgCommand --import gpg.key".!
     } else {
       val decoded = Base64.getDecoder().decode(secret)
-      val key = Files.write(Paths.get("key.gpg"), decoded)
-      val exit = s"$gpgCommand --import ${key.toAbsolutePath()}".!
+      val key = Files.write(homedir.resolve("key.asc"), decoded)
+      val exit =
+        s"$gpgCommand --yes --always-trust --import ${key.toAbsolutePath()}".!
       assert(exit == 0, s"gpg --import failed: $exit")
     }
     installDefaultKey()
   }
 
   def installDefaultKey(): Unit = {
-    val gnupg = Paths.get(System.getProperty("user.home")).resolve(".gnupg")
     Files.createDirectories(gnupg)
     val uid = List(gpgCommand, "--list-keys").!!.linesIterator
       .filter(_.startsWith(" "))
