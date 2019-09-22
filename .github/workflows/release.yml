@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - uses: olafurpg/setup-scala@v2
-    - name: Publish ${{ github.ref }}
+    - name: Publish
       run: csbt ci-release
       env:
        PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
