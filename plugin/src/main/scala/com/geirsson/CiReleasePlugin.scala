@@ -29,7 +29,7 @@ object CiReleasePlugin extends AutoPlugin {
   def isTravisTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("BUILD_SOURCEBRANCH"))
-      .orElse(Option(System.getenv("GITHUB_REF")))
+        .orElse(Option(System.getenv("GITHUB_REF")))
         .exists(_.startsWith("refs/tags"))
   def travisTag: String =
     Option(System.getenv("TRAVIS_TAG"))
@@ -57,6 +57,17 @@ object CiReleasePlugin extends AutoPlugin {
     } else {
       (s"echo $secret" #| "base64 --decode" #| "gpg --import").!
     }
+  }
+
+  def defaultGpgHex(): String = {
+    List("gpg", "--list-sigs").!!.linesIterator
+      .filter(_.startsWith("sig 3"))
+      .map(_.stripPrefix("sig 3"))
+      .toList
+      .head
+      .split("\\s+")
+      .filter(_.nonEmpty)
+      .head
   }
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
@@ -95,7 +106,10 @@ object CiReleasePlugin extends AutoPlugin {
           }
         } else {
           println("Tag push detected, publishing a stable release")
-          reloadKeyFiles ::
+          val setDefaultGpgKey =
+            s"""set every credentials += Credentials("GnuPG Key ID", "gpg", "${defaultGpgHex()}", "ignored")"""
+          setDefaultGpgKey ::
+            reloadKeyFiles ::
             sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
             currentState
