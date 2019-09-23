@@ -9,18 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: olafurpg/setup-scala@v2
+      - uses: olafurpg/setup-gpg@v1
       - name: Publish
         run: |
-          gpg --version
-          wget https://gnupg.org/ftp/gcrypt/gnupg/gnupg-1.4.23.tar.bz2
-          bzip2 -d gnupg-1.4.23.tar.bz2
-          tar xvf gnupg-1.4.23.tar
-          cd gnupg-1.4.23
-          ./configure
-          make
-          export PATH="$(pwd)/g10:$PATH"
-          cd ..
-          gpg --version
+          git ls-remote --get-url origin
           csbt ci-release
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
