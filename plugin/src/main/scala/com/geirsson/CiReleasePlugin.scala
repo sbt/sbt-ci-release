@@ -1,6 +1,7 @@
 package com.geirsson
 
 import com.typesafe.sbt.GitPlugin
+import com.typesafe.sbt.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.SbtPgp.autoImport._
 import java.nio.file.Files
@@ -14,6 +15,7 @@ import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport._
 import scala.sys.process._
+import scala.util.control.NonFatal
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
 
@@ -62,7 +64,31 @@ object CiReleasePlugin extends AutoPlugin {
   }
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
-    dynverSonatypeSnapshots := true
+    dynverSonatypeSnapshots := true,
+    scmInfo ~= {
+      case Some(info) => Some(info)
+      case None =>
+        import scala.sys.process._
+        val identifier = """([a-zA-Z0-9]+)"""
+        val GitHubHttps = raw"https://github.com/$identifier/$identifier".r
+        try {
+          val remote = List("git", "ls-remote", "--get-url", "origin").!!.trim()
+          remote match {
+            case GitHubHttps(user, repo) =>
+              Some(
+                ScmInfo(
+                  url(s"https://github.com/$user/$repo"),
+                  s"scm:git:https://github.com/$user/$repo.git",
+                  Some(s"scm:git:git@github.com:$user/$repo.git")
+                )
+              )
+            case _ =>
+              None
+          }
+        } catch {
+          case NonFatal(_) => None
+        }
+    }
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
