@@ -69,8 +69,8 @@ object CiReleasePlugin extends AutoPlugin {
       case Some(info) => Some(info)
       case None =>
         import scala.sys.process._
-        val identifier = """([a-zA-Z0-9]+)"""
-        val GitHubHttps = raw"https://github.com/$identifier/$identifier".r
+        val identifier = """([^\/]+)"""
+        val GitHubHttps = s"https://github.com/$identifier/$identifier".r
         try {
           val remote = List("git", "ls-remote", "--get-url", "origin").!!.trim()
           remote match {
