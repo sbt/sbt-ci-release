@@ -32,15 +32,16 @@ lazy val plugin = project
     addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0"),
     TaskKey[Unit]("nativeWindowsImage") := {
       import scala.sys.process._
-      val cp = fullClasspath
-        .in(Compile)
-        .value
-        .map(_.data)
-        .mkString(java.io.File.pathSeparator)
-      val exit = List(sys.env("NATIVE_IMAGE"), "-cp", cp, "--no-fallback").!
+      val cp = assembly.in(Compile).value.toString
+      val exit = List(sys.env("NATIVE_IMAGE"), "-jar", cp, "--no-fallback").!
       require(exit == 0)
     },
+    mainClass in assembly := Some("com.example.Main"),
     mainClass in GraalVMNativeImage := Some("com.geirsson.Main"),
+    assemblyMergeStrategy in assembly := {
+      case "META-INF/MANIFEST.MF" => MergeStrategy.discard
+      case x                      => MergeStrategy.first
+    },
     graalVMNativeImageOptions ++= {
       val reflectionFile =
         sourceDirectory.in(Compile).value./("graal")./("reflection.json")
@@ -59,3 +60,4 @@ lazy val plugin = project
       )
     }
   )
+  .enablePlugins(AssemblyPlugin)
