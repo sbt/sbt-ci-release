@@ -30,6 +30,16 @@ lazy val plugin = project
     addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.7"),
     addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0"),
+    TaskKey[Unit]("nativeWindowsImage") := {
+      import scala.sys.process._
+      val cp = fullClasspath
+        .in(Compile)
+        .value
+        .map(_.data)
+        .mkString(java.io.File.pathSeparator)
+      val exit = List(sys.env("NATIVE_IMAGE"), "-cp", cp, "--no-fallback").!
+      require(exit == 0)
+    },
     mainClass in GraalVMNativeImage := Some("com.geirsson.Main"),
     graalVMNativeImageOptions ++= {
       val reflectionFile =
