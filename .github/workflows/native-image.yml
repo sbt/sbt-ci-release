@@ -25,10 +25,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Install SDK
-        shell: pwsh
-        run: |
-          Remove-Item –path 'C:\Program Files (x86)\Microsoft Visual Studio\' -Filter *test* -whatif
       - name: Link native image
         shell: bash
         run: |
