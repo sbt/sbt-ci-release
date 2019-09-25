@@ -1,4 +1,4 @@
-name: CI
+name: Native Image
 on:
   push:
 jobs:
@@ -12,7 +12,7 @@ jobs:
       - name: Compile
         run: |
           gu install native-image
-          show plugin/graalvm-native-image:packageBin
+          csbt plugin/graalvm-native-image:packageBin
       - uses: actions/upload-artifact@master
         with:
           name: plugin
