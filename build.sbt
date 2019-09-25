@@ -36,7 +36,7 @@ lazy val plugin = project
       val exit = List(sys.env("NATIVE_IMAGE"), "-jar", cp, "--no-fallback").!
       require(exit == 0)
     },
-    mainClass in assembly := Some("com.example.Main"),
+    mainClass in assembly := Some("com.geirsson.Main"),
     mainClass in GraalVMNativeImage := Some("com.geirsson.Main"),
     assemblyMergeStrategy in assembly := {
       case x if Assembly.isConfigFile(x) =>
