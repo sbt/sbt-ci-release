@@ -3,7 +3,10 @@ on:
   push:
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v1
       - uses: olafurpg/setup-scala@v2
@@ -11,8 +14,8 @@ jobs:
           java-version: graalvm@
       - name: Compile
         run: |
-          gu install native-image
-          csbt plugin/graalvm-native-image:packageBin
+          gu install native-
+          java -Xss2m -Xmx4096m -XX:-TieredCompilation -XX:ReservedCodeCacheSize=48m -Dfile.encoding=UTF-8 -Djna.nosys=true -jar sbt-launch.jar plugin/graalvm-native-image:packageBin
       - uses: actions/upload-artifact@master
         with:
           name: plugin
