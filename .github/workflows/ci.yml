@@ -3,9 +3,13 @@ on:
   push:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
     - uses: olafurpg/setup-scala@v2
     - name: Compile
-      run: csbt compile
+      run: sbt compile
