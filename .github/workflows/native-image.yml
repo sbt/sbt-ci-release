@@ -30,6 +30,7 @@ jobs:
         run: |
           Set-ExecutionPolicy RemoteSigned -scope CurrentUser
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          scoop install -y mingw windows-sdk-7.1 vcbuildtools
       - name: Link native image
         shell: bash
         run: |
