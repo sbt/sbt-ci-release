@@ -5,6 +5,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
@@ -14,7 +15,7 @@ jobs:
           java-version: graalvm@
       - name: Compile
         run: |
-          gu install native-
+          gu install native-image
           java -Xss2m -Xmx4096m -XX:-TieredCompilation -XX:ReservedCodeCacheSize=48m -Dfile.encoding=UTF-8 -Djna.nosys=true -jar sbt-launch.jar plugin/graalvm-native-image:packageBin
       - uses: actions/upload-artifact@master
         with:
