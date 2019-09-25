@@ -21,6 +21,7 @@ onLoadMessage := s"Welcome to sbt-ci-release ${version.value}"
 skip in publish := true // don't publish the root project
 
 lazy val plugin = project
+  .enablePlugins(GraalVMNativeImagePlugin)
   .settings(
     moduleName := "sbt-ci-release",
     sbtPlugin := true,
@@ -28,5 +29,23 @@ lazy val plugin = project
     addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0"),
     addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.7"),
-    addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0")
+    addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0"),
+    mainClass in GraalVMNativeImage := Some("com.geirsson.Main"),
+    graalVMNativeImageOptions ++= {
+      val reflectionFile =
+        sourceDirectory.in(Compile).value./("graal")./("reflection.json")
+      assert(reflectionFile.exists, s"no such file: $reflectionFile")
+      List(
+        "--no-server",
+        "--enable-http",
+        "--enable-https",
+        "-H:EnableURLProtocols=http,https",
+        "--enable-all-security-services",
+        "--no-fallback",
+        s"-H:ReflectionConfigurationFiles=$reflectionFile",
+        //"--allow-incomplete-classpath",
+        "-H:+ReportExceptionStackTraces"
+        //"--initialize-at-build-time=scala.Function1"
+      )
+    }
   )

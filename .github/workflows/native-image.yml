@@ -1,0 +1,19 @@
+name: CI
+on:
+  push:
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: olafurpg/setup-scala@v2
+        with:
+          java-version: graalvm@
+      - name: Compile
+        run: |
+          gu install native-image
+          show plugin/graalvm-native-image:packageBin
+      - uses: actions/upload-artifact@master
+        with:
+          name: plugin
+          path: plugin/target/graalvm-native-image/plugin
