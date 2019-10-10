@@ -394,7 +394,12 @@ project?
 - [scalameta/metabrowse](https://github.com/scalameta/metabrowse/)
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
-- [typelevel/paiges](https://github.com/typeleve/paiges/)
+- [typelevel/paiges](https://github.com/typelevel/paiges/)
+- [kubukoz/sup](https://github.com/kubukoz/sup/)
+- [kubukoz/error-control](https://github.com/kubukoz/error-control/)
+- [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
+- [kubukoz/slick-effect](https://github.com/kubukoz/slick-effect/)
+- [kubukoz/flawless](https://github.com/kubukoz/flawless/)
 
 ## Alternatives
 
