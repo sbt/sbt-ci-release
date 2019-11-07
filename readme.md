@@ -239,8 +239,6 @@ jobs:
 
 Notes:
 
-- for a complete example of the Travis configuration, see the
-  [.travis.yml in this repository](https://github.com/olafurpg/sbt-ci-release/blob/master/.travis.yml)
 - if we use `after_success` instead of build stages, we would run `ci-release`
   after both `formatting` and `compile`. As long as you make sure you don't
   publish the same module multiple times, you can use any Travis configuration
@@ -330,6 +328,8 @@ coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapsho
 ```
 
 ### What about other CIs environments than Travis?
+
+This project uses a github workflow, [which you can review here](https://github.com/olafurpg/sbt-ci-release/tree/master/.github/workflows)
 
 You can try
 [sbt-release-early](https://github.com/scalacenter/sbt-release-early).
