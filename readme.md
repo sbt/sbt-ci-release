@@ -379,6 +379,9 @@ branch into master. A manual workaround is to log into https://oss.sonatype.org/
 and drop the failing repository from the web UI. Alternatively, you can run
 `sonatypeDrop <staging-repo-id>` from the sbt shell instead of using the web UI.
 
+### How do I create release notes? Can they be automatically generated?
+We think that the creation of release notes should not be fully automated because commit messages don't often communicate the end user impact well. You can use [Release Drafter](https://github.com/apps/release-drafter) github app (or the Github Action) to help you craft release notes.
+
 ## Adopters
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
