@@ -262,7 +262,7 @@ git push origin v0.1.0
 
 Note that the tag version MUST start with `v`.
 
-It's is normal that something fails on the first attempt to publish from CI.
+It is normal that something fails on the first attempt to publish from CI.
 Even if it takes 10 attempts to get it right, it's still worth it because it's
 so nice to have automatic CI releases. If all is correctly setup, your Travis
 jobs page will look like this:
