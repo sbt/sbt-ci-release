@@ -391,6 +391,7 @@ project?
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
 - [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
+- [fthomas/refined](https://github.com/fthomas/refined/)
 - [olafurpg/metaconfig](https://github.com/olafurpg/metaconfig/)
 - [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
 - [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
