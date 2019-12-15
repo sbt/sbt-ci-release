@@ -391,6 +391,7 @@ project?
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
 - [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
+- [fd4s/fs2-kafka](https://github.com/fd4s/fs2-kafka)
 - [fthomas/refined](https://github.com/fthomas/refined/)
 - [kubukoz/error-control](https://github.com/kubukoz/error-control/)
 - [kubukoz/flawless](https://github.com/kubukoz/flawless/)
