@@ -404,6 +404,7 @@ project?
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
 - [typelevel/paiges](https://github.com/typelevel/paiges/)
+- [vlovgr/ciris](https://github.com/vlovgr/ciris)
 
 ## Alternatives
 
