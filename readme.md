@@ -391,7 +391,14 @@ project?
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
 - [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
+- [fd4s/fs2-kafka](https://github.com/fd4s/fs2-kafka)
+- [fd4s/vulcan](https://github.com/fd4s/vulcan)
 - [fthomas/refined](https://github.com/fthomas/refined/)
+- [kubukoz/error-control](https://github.com/kubukoz/error-control/)
+- [kubukoz/flawless](https://github.com/kubukoz/flawless/)
+- [kubukoz/slick-effect](https://github.com/kubukoz/slick-effect/)
+- [kubukoz/sup](https://github.com/kubukoz/sup/)
+- [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
 - [olafurpg/metaconfig](https://github.com/olafurpg/metaconfig/)
 - [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
 - [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
@@ -399,11 +406,7 @@ project?
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
 - [typelevel/paiges](https://github.com/typelevel/paiges/)
-- [kubukoz/sup](https://github.com/kubukoz/sup/)
-- [kubukoz/error-control](https://github.com/kubukoz/error-control/)
-- [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
-- [kubukoz/slick-effect](https://github.com/kubukoz/slick-effect/)
-- [kubukoz/flawless](https://github.com/kubukoz/flawless/)
+- [vlovgr/ciris](https://github.com/vlovgr/ciris)
 
 ## Alternatives
 
