@@ -1,0 +1,6 @@
+language: scala
+jdk:
+  - openjdk8
+jobs:
+  include:
+    - script: sbt update
