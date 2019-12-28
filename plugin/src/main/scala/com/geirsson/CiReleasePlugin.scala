@@ -14,6 +14,7 @@ import sbt._
 import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport._
+import scala.deprecated
 import scala.sys.process._
 import scala.util.control.NonFatal
 import xerial.sbt.Sonatype
@@ -25,29 +26,44 @@ object CiReleasePlugin extends AutoPlugin {
   override def requires =
     JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin && Sonatype
 
-  def isTravisSecure: Boolean =
+  def isSecure: Boolean =
     System.getenv("TRAVIS_SECURE_ENV_VARS") == "true" ||
       System.getenv("BUILD_REASON") == "IndividualCI" ||
       System.getenv("PGP_SECRET") != null
-  def isTravisTag: Boolean =
+  def isTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
+    Option(System.getenv("CIRCLE_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("BUILD_SOURCEBRANCH"))
         .orElse(Option(System.getenv("GITHUB_REF")))
         .exists(_.startsWith("refs/tags"))
-  def travisTag: String =
+  def releaseTag: String =
     Option(System.getenv("TRAVIS_TAG"))
       .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
       .orElse(Option(System.getenv("GITHUB_REF")))
+      .orElse(Option(System.getenv("CIRCLE_TAG")))
       .getOrElse("<unknown>")
-  def travisBranch: String =
+  def currentBranch: String =
     Option(System.getenv("TRAVIS_BRANCH"))
       .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
       .orElse(Option(System.getenv("GITHUB_REF")))
+      .orElse(Option(System.getenv("CIRCLE_BRANCH")))
       .getOrElse("<unknown>")
+
+  @deprecated("Deprecated, please use isSecure", "1.4.32")
+  def isTravisSecure: Boolean = isSecure
+  @deprecated("Deprecated, please use isTag", "1.4.32")
+  def isTravisTag: Boolean = isTag
+  @deprecated("Deprecated, please use releaseTag", "1.4.32")
+  def travisTag: String = releaseTag
+  @deprecated("Deprecated, please use currentBranch", "1.4.32")
+  def travisBranch: String = currentBranch
+
   def isAzure: Boolean =
     System.getenv("TF_BUILD") == "True"
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
+  def isCircleCi: Boolean = 
+    System.getenv("CIRCLECI") == true
 
   def setupGpg(): Unit = {
     List("gpg", "--version").!
@@ -95,19 +111,19 @@ object CiReleasePlugin extends AutoPlugin {
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
-      if (!isTravisSecure) {
+      if (!isSecure) {
         println("No access to secret variables, doing nothing")
         currentState
       } else {
         println(
           s"Running ci-release.\n" +
-            s"  branch=$travisBranch"
+            s"  branch=$currentBranch"
         )
         setupGpg()
         // https://github.com/olafurpg/sbt-ci-release/issues/64
         val reloadKeyFiles =
           "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
-        if (!isTravisTag) {
+        if (!isTag) {
           if (isSnapshotVersion(currentState)) {
             println(s"No tag push, publishing SNAPSHOT")
             reloadKeyFiles ::
@@ -146,5 +162,4 @@ object CiReleasePlugin extends AutoPlugin {
       case None    => throw new NoSuchFieldError("version")
     }
   }
-
 }
