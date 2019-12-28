@@ -329,7 +329,8 @@ coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapsho
 
 ### What about other CIs environments than Travis?
 
-This project uses a github workflow, [which you can review here](https://github.com/olafurpg/sbt-ci-release/tree/master/.github/workflows)
+- This project uses a github workflow, [which you can review here](https://github.com/olafurpg/sbt-ci-release/tree/master/.github/workflows)
+- [CircleCI](https://circleci.com/) is supported
 
 You can try
 [sbt-release-early](https://github.com/scalacenter/sbt-release-early).
