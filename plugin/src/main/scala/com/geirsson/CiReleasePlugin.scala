@@ -14,6 +14,7 @@ import sbt._
 import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport._
+import scala.deprecated
 import scala.sys.process._
 import scala.util.control.NonFatal
 import xerial.sbt.Sonatype
@@ -31,7 +32,7 @@ object CiReleasePlugin extends AutoPlugin {
       System.getenv("PGP_SECRET") != null
   def isTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
-      Option(System.getenv("CIRCLE_TAG")).exists(_.nonEmpty) ||
+    Option(System.getenv("CIRCLE_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("BUILD_SOURCEBRANCH"))
         .orElse(Option(System.getenv("GITHUB_REF")))
         .exists(_.startsWith("refs/tags"))
@@ -47,11 +48,21 @@ object CiReleasePlugin extends AutoPlugin {
       .orElse(Option(System.getenv("GITHUB_REF")))
       .orElse(Option(System.getenv("CIRCLE_BRANCH")))
       .getOrElse("<unknown>")
+
+  @deprecated("Deprecated, please use isSecure", "1.4.32")
+  def isTravisSecure: Boolean = isSecure
+  @deprecated("Deprecated, please use isTag", "1.4.32")
+  def isTravisTag: Boolean = isTag
+  @deprecated("Deprecated, please use releaseTag", "1.4.32")
+  def travisTag: String = releaseTag
+  @deprecated("Deprecated, please use currentBranch", "1.4.32")
+  def travisBranch: String = currentBranch
+
   def isAzure: Boolean =
     System.getenv("TF_BUILD") == "True"
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
-  def isCircleCi: Boolean =
+  def isCircleCi: Boolean = 
     System.getenv("CIRCLECI") == true
 
   def setupGpg(): Unit = {
