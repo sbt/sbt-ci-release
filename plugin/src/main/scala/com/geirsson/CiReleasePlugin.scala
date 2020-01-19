@@ -32,7 +32,7 @@ object CiReleasePlugin extends AutoPlugin {
       System.getenv("PGP_SECRET") != null
   def isTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
-    Option(System.getenv("CIRCLE_TAG")).exists(_.nonEmpty) ||
+      Option(System.getenv("CIRCLE_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("BUILD_SOURCEBRANCH"))
         .orElse(Option(System.getenv("GITHUB_REF")))
         .exists(_.startsWith("refs/tags"))
@@ -62,7 +62,7 @@ object CiReleasePlugin extends AutoPlugin {
     System.getenv("TF_BUILD") == "True"
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
-  def isCircleCi: Boolean = 
+  def isCircleCi: Boolean =
     System.getenv("CIRCLECI") == true
 
   def setupGpg(): Unit = {
@@ -141,7 +141,10 @@ object CiReleasePlugin extends AutoPlugin {
           println("Tag push detected, publishing a stable release")
           reloadKeyFiles ::
             sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
-            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
+            sys.env.getOrElse(
+              "CI_SONATYPE_RELEASE",
+              "; sonatypeBundleClean ; sonatypeBundleRelease"
+            ) ::
             currentState
         }
       }
