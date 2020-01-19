@@ -149,8 +149,7 @@ and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
 
 1. Select "Submit Key"
 2. Paste in the exported public key
-3. Click on "Submit
-Public Key".
+3. Click on "Submit Public Key".
 
 ![Ubuntu Keyserver](https://i.imgur.com/njvOpmq.png)
 
@@ -262,10 +261,10 @@ git push origin v0.1.0
 
 Note that the tag version MUST start with `v`.
 
-It is normal that something fails on the first attempt to publish from CI.
-Even if it takes 10 attempts to get it right, it's still worth it because it's
-so nice to have automatic CI releases. If all is correctly setup, your Travis
-jobs page will look like this:
+It is normal that something fails on the first attempt to publish from CI. Even
+if it takes 10 attempts to get it right, it's still worth it because it's so
+nice to have automatic CI releases. If all is correctly setup, your Travis jobs
+page will look like this:
 
 <img width="1058" alt="screen shot 2018-06-23 at 15 48 43" src="https://user-images.githubusercontent.com/1408093/41810386-b8c11198-76fd-11e8-8be1-54b84181e60d.png">
 
@@ -295,6 +294,32 @@ lazy val core = project.settings(
 
 The command `+publishSigned` (default value for `CI_RELEASE`) will then publish
 that project for 2.11, 2.12 and 2.13.
+
+### How do I publish cross-built Scala.js projects?
+
+If you publish for multiple Scala.js versions, start by disabling publishing of
+the non-JS projects when the `SCALAJS_VERSION` environment variable is defined.
+
+```diff
+// build.sbt
++ val customScalaJSVersion = Option(System.getenv("SCALAJS_VERSION"))
+lazy val myLibrary = crossProject(JSPlatform, JVMPlatform)
+  .settings(
+    // ...
+  )
++  .jvmSettings(
++    skip.in(publish) := customScalaJSVersion.isDefined
++  )
+```
+
+Next, add an additional `ci-release` step in your CI config to publish the
+custom Scala.js version
+
+```diff
+// .travis.yml
+  sbt ci-release
++ SCALAJS_VERSION=0.6.31 sbt ci-release
+```
 
 ### Can I depend on Maven Central releases immediately?
 
@@ -329,7 +354,8 @@ coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapsho
 
 ### What about other CIs environments than Travis?
 
-- This project uses a github workflow, [which you can review here](https://github.com/olafurpg/sbt-ci-release/tree/master/.github/workflows)
+- This project uses a github workflow,
+  [which you can review here](https://github.com/olafurpg/sbt-ci-release/tree/master/.github/workflows)
 - [CircleCI](https://circleci.com/) is supported
 
 You can try
@@ -381,7 +407,11 @@ and drop the failing repository from the web UI. Alternatively, you can run
 `sonatypeDrop <staging-repo-id>` from the sbt shell instead of using the web UI.
 
 ### How do I create release notes? Can they be automatically generated?
-We think that the creation of release notes should not be fully automated because commit messages don't often communicate the end user impact well. You can use [Release Drafter](https://github.com/apps/release-drafter) github app (or the Github Action) to help you craft release notes.
+
+We think that the creation of release notes should not be fully automated
+because commit messages don't often communicate the end user impact well. You
+can use [Release Drafter](https://github.com/apps/release-drafter) github app
+(or the Github Action) to help you craft release notes.
 
 ## Adopters
 
