@@ -33,6 +33,7 @@ object CiReleasePlugin extends AutoPlugin {
   def isTag: Boolean =
     Option(System.getenv("TRAVIS_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("CIRCLE_TAG")).exists(_.nonEmpty) ||
+      Option(System.getenv("CI_COMMIT_TAG")).exists(_.nonEmpty) ||
       Option(System.getenv("BUILD_SOURCEBRANCH"))
         .orElse(Option(System.getenv("GITHUB_REF")))
         .exists(_.startsWith("refs/tags"))
@@ -41,12 +42,14 @@ object CiReleasePlugin extends AutoPlugin {
       .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
       .orElse(Option(System.getenv("GITHUB_REF")))
       .orElse(Option(System.getenv("CIRCLE_TAG")))
+      .orElse(Option(System.getenv("CI_COMMIT_TAG")))
       .getOrElse("<unknown>")
   def currentBranch: String =
     Option(System.getenv("TRAVIS_BRANCH"))
       .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
       .orElse(Option(System.getenv("GITHUB_REF")))
       .orElse(Option(System.getenv("CIRCLE_BRANCH")))
+      .orElse(Option(System.getenv("CI_COMMIT_BRANCH")))
       .getOrElse("<unknown>")
 
   @deprecated("Deprecated, please use isSecure", "1.4.32")
@@ -63,7 +66,10 @@ object CiReleasePlugin extends AutoPlugin {
   def isGithub: Boolean =
     System.getenv("GITHUB_ACTION") != null
   def isCircleCi: Boolean =
-    System.getenv("CIRCLECI") == true
+    System.getenv("CIRCLECI") == "true"
+  def isGitlab: Boolean =
+    System.getenv("GITLAB_CI") == "true"
+
 
   def setupGpg(): Unit = {
     List("gpg", "--version").!
