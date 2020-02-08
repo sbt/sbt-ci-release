@@ -70,7 +70,6 @@ object CiReleasePlugin extends AutoPlugin {
   def isGitlab: Boolean =
     System.getenv("GITLAB_CI") == "true"
 
-
   def setupGpg(): Unit = {
     List("gpg", "--version").!
     val secret = sys.env("PGP_SECRET")
@@ -146,6 +145,7 @@ object CiReleasePlugin extends AutoPlugin {
         } else {
           println("Tag push detected, publishing a stable release")
           reloadKeyFiles ::
+            sys.env.getOrElse("CI_CLEAN", "clean") ::
             sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
             sys.env.getOrElse(
               "CI_SONATYPE_RELEASE",
