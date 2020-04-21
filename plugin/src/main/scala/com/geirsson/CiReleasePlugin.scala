@@ -84,27 +84,30 @@ object CiReleasePlugin extends AutoPlugin {
     }
   }
 
+  private def gitHubScmInfo(user: String, repo: String) =
+    ScmInfo(
+      url(s"https://github.com/$user/$repo"),
+      s"scm:git:https://github.com/$user/$repo.git",
+      Some(s"scm:git:git@github.com:$user/$repo.git")
+    )
+
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
     dynverSonatypeSnapshots := true,
     scmInfo ~= {
       case Some(info) => Some(info)
       case None =>
         import scala.sys.process._
-        val identifier = """([^\/]+)"""
-        val GitHubHttps = s"https://github.com/$identifier/$identifier".r
+        val identifier = """([^\/]+?)"""
+        val GitHubHttps = s"https://github.com/$identifier/$identifier(?:\\.git)?".r
+        val GitHubGit   = s"git://github.com:$identifier/$identifier(?:\\.git)?".r
+        val GitHubSsh   = s"git@github.com:$identifier/$identifier(?:\\.git)?".r
         try {
           val remote = List("git", "ls-remote", "--get-url", "origin").!!.trim()
           remote match {
-            case GitHubHttps(user, repo) =>
-              Some(
-                ScmInfo(
-                  url(s"https://github.com/$user/$repo"),
-                  s"scm:git:https://github.com/$user/$repo.git",
-                  Some(s"scm:git:git@github.com:$user/$repo.git")
-                )
-              )
-            case _ =>
-              None
+            case GitHubHttps(user, repo) => Some(gitHubScmInfo(user, repo))
+            case GitHubGit(user, repo)   => Some(gitHubScmInfo(user, repo))
+            case GitHubSsh(user, repo)   => Some(gitHubScmInfo(user, repo))
+            case _                       => None
           }
         } catch {
           case NonFatal(_) => None
