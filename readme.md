@@ -164,7 +164,9 @@ variables
 ![](https://user-images.githubusercontent.com/1408093/41207402-bbb3970a-6d15-11e8-8772-000cc194ee92.png)
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
-  gpg key.
+  gpg key. If the password contains bash special characters, make sure to
+  escape it by wrapping it in single quotes `'my?pa$$word'`, see
+  [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
   export from the command line like here below
 
