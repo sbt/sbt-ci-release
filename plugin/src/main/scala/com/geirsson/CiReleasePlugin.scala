@@ -1,26 +1,30 @@
 package com.geirsson
 
-import com.typesafe.sbt.GitPlugin
-import com.typesafe.sbt.SbtGit.GitKeys
-import com.jsuereth.sbtpgp.SbtPgp
-import com.jsuereth.sbtpgp.SbtPgp.autoImport._
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths}
 import java.util.Base64
-import sbt.Def
+
+import com.jsuereth.sbtpgp.SbtPgp
+import com.typesafe.sbt.GitPlugin
+import com.typesafe.sbt.GitPlugin.autoImport._
 import sbt.Keys._
-import sbt._
 import sbt.plugins.JvmPlugin
+import sbt._
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport._
-import scala.deprecated
-import scala.sys.process._
-import scala.util.control.NonFatal
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
 
+import scala.sys.process._
+import scala.util.control.NonFatal
+import scala.util.matching.Regex
+
 object CiReleasePlugin extends AutoPlugin {
+
+  object autoImport {
+    val cireleaseAlwaysPublishBranch =
+      settingKey[Regex]("Branch(es) where each push will be published.")
+  }
+  import autoImport._
 
   override def trigger = allRequirements
   override def requires =
@@ -91,16 +95,22 @@ object CiReleasePlugin extends AutoPlugin {
       Some(s"scm:git:git@github.com:$user/$repo.git")
     )
 
+  private def onAlwaysPublishBranch(
+      alwaysPublishBranchRegex: Regex,
+      gitCurrentBranch: String
+  ): Boolean =
+    alwaysPublishBranchRegex.findFirstMatchIn(gitCurrentBranch).isDefined
+
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
-    dynverSonatypeSnapshots := true,
     scmInfo ~= {
       case Some(info) => Some(info)
       case None =>
         import scala.sys.process._
         val identifier = """([^\/]+?)"""
-        val GitHubHttps = s"https://github.com/$identifier/$identifier(?:\\.git)?".r
-        val GitHubGit   = s"git://github.com:$identifier/$identifier(?:\\.git)?".r
-        val GitHubSsh   = s"git@github.com:$identifier/$identifier(?:\\.git)?".r
+        val GitHubHttps =
+          s"https://github.com/$identifier/$identifier(?:\\.git)?".r
+        val GitHubGit = s"git://github.com:$identifier/$identifier(?:\\.git)?".r
+        val GitHubSsh = s"git@github.com:$identifier/$identifier(?:\\.git)?".r
         try {
           val remote = List("git", "ls-remote", "--get-url", "origin").!!.trim()
           remote match {
@@ -131,7 +141,22 @@ object CiReleasePlugin extends AutoPlugin {
         // https://github.com/olafurpg/sbt-ci-release/issues/64
         val reloadKeyFiles =
           "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
-        if (!isTag) {
+        val publishRelease =
+          reloadKeyFiles ::
+            sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
+            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
+            currentState
+        if (isTag) {
+          println("Tag push detected, publishing a stable release")
+          publishRelease
+        } else if (onAlwaysPublishBranch(
+                     cireleaseAlwaysPublishBranch.value,
+                     git.gitCurrentBranch.value
+                   )) {
+          println("On always-publish branch, publishing a stable release")
+          publishRelease
+        } else {
           if (isSnapshotVersion(currentState)) {
             println(s"No tag push, publishing SNAPSHOT")
             reloadKeyFiles ::
@@ -145,13 +170,6 @@ object CiReleasePlugin extends AutoPlugin {
             )
             currentState
           }
-        } else {
-          println("Tag push detected, publishing a stable release")
-          reloadKeyFiles ::
-            sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
-            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
-            currentState
         }
       }
     }
@@ -162,7 +180,12 @@ object CiReleasePlugin extends AutoPlugin {
       publishConfiguration.value.withOverwrite(true),
     publishLocalConfiguration :=
       publishLocalConfiguration.value.withOverwrite(true),
-    publishTo := sonatypePublishToBundle.value
+    publishTo := sonatypePublishToBundle.value,
+    cireleaseAlwaysPublishBranch := "^.^".r, // does not match anything
+    dynverSonatypeSnapshots := !onAlwaysPublishBranch(
+      cireleaseAlwaysPublishBranch.value,
+      git.gitCurrentBranch.value
+    )
   )
 
   def isSnapshotVersion(state: State): Boolean = {

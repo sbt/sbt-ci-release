@@ -272,6 +272,15 @@ page will look like this:
 
 Enjoy 👌
 
+## Continuous publishing
+
+You can designate certain branches (via regex) to always publish from them release versions of artifacts, even when not on a tag.
+This is suitable, for example, in a continuous publishing/deployment scenario.
+
+```sbt
+cireleaseAlwaysPublishBranch := "master".r
+```
+
 ## FAQ
 
 ### How do I disable publishing in certain projects?
