@@ -272,6 +272,19 @@ page will look like this:
 
 Enjoy 👌
 
+## Customizing when stable versions are released
+
+By default, stable versions are released only when on a tag.
+You can customize this behavior with `cireleasePublishStableRelease`.
+For example, to release on tag _or_ when on the `master` branch, use the following snippet
+(this may be suitable in a continuous publishing/deployment scenario):
+
+```sbt
+cireleasePublishStableRelease := {
+  CiReleasePlugin.isTag || git.gitCurrentBranch.value == "master"
+}
+```
+
 ## FAQ
 
 ### How do I disable publishing in certain projects?
