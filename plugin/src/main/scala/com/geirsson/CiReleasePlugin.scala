@@ -100,6 +100,7 @@ object CiReleasePlugin extends AutoPlugin {
     )
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
+    dynverSonatypeSnapshots := !cireleasePublishStableRelease.value,
     scmInfo ~= {
       case Some(info) => Some(info)
       case None =>
@@ -171,8 +172,7 @@ object CiReleasePlugin extends AutoPlugin {
       publishConfiguration.value.withOverwrite(true),
     publishLocalConfiguration :=
       publishLocalConfiguration.value.withOverwrite(true),
-    publishTo := sonatypePublishToBundle.value,
-    dynverSonatypeSnapshots := !cireleasePublishStableRelease.value
+    publishTo := sonatypePublishToBundle.value
   )
 
   def isSnapshotVersion(state: State): Boolean = {
