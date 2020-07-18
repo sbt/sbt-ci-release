@@ -125,6 +125,7 @@ object CiReleasePlugin extends AutoPlugin {
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
+    cireleasePublishStableRelease := isTag,
     commands += Command.command("ci-release") { currentState =>
       if (!isSecure) {
         println("No access to secret variables, doing nothing")
@@ -171,7 +172,6 @@ object CiReleasePlugin extends AutoPlugin {
     publishLocalConfiguration :=
       publishLocalConfiguration.value.withOverwrite(true),
     publishTo := sonatypePublishToBundle.value,
-    cireleasePublishStableRelease := isTag,
     dynverSonatypeSnapshots := !cireleasePublishStableRelease.value
   )
 
