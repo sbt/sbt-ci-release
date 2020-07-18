@@ -100,6 +100,7 @@ object CiReleasePlugin extends AutoPlugin {
     )
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
+    cireleasePublishStableRelease := isTag,
     dynverSonatypeSnapshots := !cireleasePublishStableRelease.value,
     scmInfo ~= {
       case Some(info) => Some(info)
@@ -126,7 +127,6 @@ object CiReleasePlugin extends AutoPlugin {
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
-    cireleasePublishStableRelease := isTag,
     commands += Command.command("ci-release") { currentState =>
       if (!isSecure) {
         println("No access to secret variables, doing nothing")
@@ -145,7 +145,7 @@ object CiReleasePlugin extends AutoPlugin {
           sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
           sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
           currentState
-        if (cireleasePublishStableRelease.value) {
+        if (cireleasePublishStableRelease.in(ThisBuild).value) {
           println(
             "Tag push detected (or overridden by the user), publishing a stable release"
           )
