@@ -133,7 +133,11 @@ below. The ID will look something like (a)
 spaces to make it look like (a)). A command like this one should do:
 
 ```bash
+# On UNIX
 LONG_ID=6E8ED79B03AD527F1B281169D28FC818985732D9
+
+# On Windows
+set LONG_ID=6E8ED79B03AD527F1B281169D28FC818985732D9
 ```
 
 Next, copy the public gpg signature
@@ -143,6 +147,8 @@ Next, copy the public gpg signature
 gpg --armor --export $LONG_ID | pbcopy
 # linux
 gpg --armor --export $LONG_ID | xclip
+# Windows
+gpg --armor --export %LONG_ID%
 ```
 
 and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
@@ -179,6 +185,8 @@ gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip
 gpg --armor --export-secret-keys $LONG_ID | base64 | sed -z 's;\n;;g' | xclip -selection clipboard -i
 # FreeBSD (assuming BSD base64)
 gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
+# Windows
+gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
 
 - `SONATYPE_PASSWORD`: The password you use to log into
@@ -314,7 +322,7 @@ lazy val myLibrary = crossProject(JSPlatform, JVMPlatform)
 +  )
 ```
 
-Next, add an additional `ci-release` step in your CI config to publish the
+Next, add an additional `ci-release` step in your CI config to publish the
 custom Scala.js version
 
 ```diff
