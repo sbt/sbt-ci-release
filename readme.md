@@ -447,6 +447,9 @@ project?
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
 - [typelevel/paiges](https://github.com/typelevel/paiges/)
+- [vigoo/clipp](https://github.com/vigoo/clipp/)
+- [vigoo/desert](https://github.com/vigoo/desert/)
+- [vigoo/prox](https://github.com/vigoo/prox/)
 - [vlovgr/ciris](https://github.com/vlovgr/ciris)
 
 ## Alternatives
