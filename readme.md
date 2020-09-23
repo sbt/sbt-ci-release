@@ -430,6 +430,7 @@ project?
 [Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
 
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
+- [bitcoin-s/bitcoin-s](https://github.com/bitcoin-s/bitcoin-s)
 - [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
 - [fd4s/fs2-kafka](https://github.com/fd4s/fs2-kafka)
