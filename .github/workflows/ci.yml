@@ -6,5 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: olafurpg/setup-scala@v2
+    - uses: olafurpg/setup-scala@v8
     - run: sbt compile
