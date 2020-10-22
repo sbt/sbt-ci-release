@@ -448,6 +448,7 @@ project?
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
 - [typelevel/paiges](https://github.com/typelevel/paiges/)
+- [upb-uc4/hlf-api](https://github.com/upb-uc4/hlf-api)
 - [vigoo/clipp](https://github.com/vigoo/clipp/)
 - [vigoo/desert](https://github.com/vigoo/desert/)
 - [vigoo/prox](https://github.com/vigoo/prox/)
