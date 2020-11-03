@@ -1,28 +1,44 @@
 # sbt-ci-release
 
-[![Build Status](https://travis-ci.org/olafurpg/sbt-ci-release.svg?branch=master)](https://travis-ci.org/olafurpg/sbt-ci-release)
+![CI](https://github.com/olafurpg/sbt-ci-release/workflows/CI/badge.svg)
 
 This is an sbt plugin to help automate releases to Sonatype and Maven Central
-from Travis CI
+from GitHub Actions.
 
 - git tag pushes are published as regular releases to Maven Central
 - merge into master commits are published as -SNAPSHOT with a unique version
   number for every commit
 
-Beware that publishing from Travis CI requires you to expose Sonatype
-credentials as secret environment variables in Travis CI jobs. However, secret
-environment variables are not accessible during pull requests.
+Beware that publishing from GitHub Actions requires you to expose Sonatype
+credentials as secret environment variables in GitHub Actions jobs. However,
+secret environment variables are not accessible during pull requests.
 
 Let's get started!
 
-<!-- TOC depthFrom:2 depthTo:2 -->
+<!-- TOC depthFrom:2 depthTo:3 -->
 
 - [Sonatype](#sonatype)
+  - [Optional: create user tokens](#optional-create-user-tokens)
 - [sbt](#sbt)
 - [GPG](#gpg)
-- [Travis](#travis)
+- [Secrets](#secrets)
+  - [GitHub Actions](#github-actions)
+  - [Travis](#travis)
 - [Git](#git)
 - [FAQ](#faq)
+  - [How do I disable publishing in certain projects?](#how-do-i-disable-publishing-in-certain-projects)
+  - [How do I publish cross-built projects?](#how-do-i-publish-cross-built-projects)
+  - [How do I publish cross-built Scala.js projects?](#how-do-i-publish-cross-built-scalajs-projects)
+  - [Can I depend on Maven Central releases immediately?](#can-i-depend-on-maven-central-releases-immediately)
+  - [How do I depend on the SNAPSHOT releases?](#how-do-i-depend-on-the-snapshot-releases)
+  - [What about other CIs environments than Travis?](#what-about-other-cis-environments-than-travis)
+  - [Does sbt-ci-release work for sbt 0.13?](#does-sbt-ci-release-work-for-sbt-013)
+  - [How do I publish sbt plugins?](#how-do-i-publish-sbt-plugins)
+  - [java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff](#javaioioexception-secret-key-ring-doesnt-start-with-secret-key-tag-tag-0xffffffff)
+  - [java.io.IOException: PUT operation to URL https://oss.sonatype.org/content/repositories/snapshots 400: Bad Request](#javaioioexception-put-operation-to-url-httpsosssonatypeorgcontentrepositoriessnapshots-400-bad-request)
+  - [java.io.IOException: Access to URL was refused by the server: Unauthorized](#javaioioexception-access-to-url-was-refused-by-the-server-unauthorized)
+  - [Failed: signature-staging, failureMessage:Missing Signature:](#failed-signature-staging-failuremessagemissing-signature)
+  - [How do I create release notes? Can they be automatically generated?](#how-do-i-create-release-notes-can-they-be-automatically-generated)
 - [Adopters](#adopters)
 - [Alternatives](#alternatives)
 
@@ -48,7 +64,7 @@ It's my GitHub account https://github.com/olafurpg/
 
 ### Optional: create user tokens
 
-If you prefer not to save your actual username and password in the Travis CI
+If you prefer not to save your actual username and password in GitHub Actions
 settings below, generate your user tokens:
 
 - login to https://oss.sonatype.org,
@@ -106,8 +122,8 @@ inThisBuild(List(
 
 ## GPG
 
-Next, create a fresh gpg key that you will share with Travis CI and only use for
-this project.
+Next, create a fresh gpg key that you will share with GitHub Actions and only
+use for this project.
 
 ```
 gpg --gen-key
@@ -159,19 +175,21 @@ and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
 
 ![Ubuntu Keyserver](https://i.imgur.com/njvOpmq.png)
 
-## Travis
+## Secrets
 
-Next, open the "Settings" panel for your project on Travis CI, for example
-https://travis-ci.org/scalameta/sbt-scalafmt/settings.
+Next, you'll need to declare four environment variables in your CI. Open the
+settings page for your CI provider.
 
-Make sure that "Build pushed branches" setting is enabled. Define four secret
-variables
+- **GitHub Actions**:
+  https://github.com/olafurpg/sbt-ci-release/settings/secrets
+- **Travis CI**: https://travis-ci.com/scalameta/sbt-scalafmt/settings (Make
+  sure that "Build pushed branches" setting is enabled).
 
-![](https://user-images.githubusercontent.com/1408093/41207402-bbb3970a-6d15-11e8-8772-000cc194ee92.png)
+Add the following secrets:
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
-  gpg key. If the password contains bash special characters, make sure to
-  escape it by wrapping it in single quotes `'my?pa$$word'`, see
+  gpg key. If the password contains bash special characters, make sure to escape
+  it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
   export from the command line like here below
@@ -206,7 +224,29 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
   projects to change to `sonatypeReleaseAll`. Defaults to
   `sonatypeBundleRelease` if not provided.
 
-### .travis.yml
+If everything is setup correctly, your secrets settings should look like this if
+you're using GitHub Actions.
+
+![Screenshot 2020-11-03 at 08 45 12](https://user-images.githubusercontent.com/1408093/97960055-ee09c780-1db0-11eb-961b-076d0e503b24.png)
+
+### GitHub Actions
+
+Run the following command to install the same
+[`release.yml`](https://github.com/olafurpg/sbt-ci-release/blob/master/.github/workflows/release.yml)
+script that is used to release this repository.
+
+```sh
+mkdir -p .github/workflows && \
+  curl -L https://raw.githubusercontent.com/olafurpg/sbt-ci-release/master/.github/workflows/release.yml > .github/workflows/release.yml
+```
+
+Commit the file and merge into master.
+
+### Travis
+
+> Skip this step if you're using GitHub Actions. > Unless you have a specific
+> reason to use Travis, we recommend using GitHub Actions because > it's easier
+> to configure.
 
 Next, update `.travis.yml` to trigger `ci-release` on successful merge into
 master and on tag push. There are many ways to do this, but I recommend using
