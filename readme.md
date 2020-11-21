@@ -51,14 +51,14 @@ https://central.sonatype.org/pages/ossrh-guide.html to create a Sonatype account
 and make sure you have publishing rights for a domain name. This is a one-time
 setup per domain name.
 
-If you don't have a domain name, you can use `com.github.<@your_username>`. Here
+If you don't have a domain name, you can use `io.github.<@your_username>`. Here
 is a template you can use to write the Sonatype issue:
 
 ```
 Title:
-Publish rights for com.github.olafurpg
+Publish rights for io.github.olafurpg
 Description:
-Hi, I would like to publish under the groupId: com.github.olafurpg.
+Hi, I would like to publish under the groupId: io.github.olafurpg.
 It's my GitHub account https://github.com/olafurpg/
 ```
 
