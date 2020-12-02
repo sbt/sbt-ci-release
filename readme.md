@@ -188,7 +188,8 @@ settings page for your CI provider.
 Add the following secrets:
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
-  gpg key. If the password contains bash special characters, make sure to escape
+  gpg key. 
+  **For Travis Only:** If the password contains bash special characters, make sure to escape
   it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
@@ -209,7 +210,8 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://oss.sonatype.org/. Alternatively, the password part of the user token
-  if you generated one above. If the password contains bash special characters,
+  if you generated one above. 
+  **For Travis Only:** If the password contains bash special characters,
   make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `SONATYPE_USERNAME`: The username you use to log into
