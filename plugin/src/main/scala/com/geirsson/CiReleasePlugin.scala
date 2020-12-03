@@ -71,16 +71,26 @@ object CiReleasePlugin extends AutoPlugin {
     System.getenv("GITLAB_CI") == "true"
 
   def setupGpg(): Unit = {
-    List("gpg", "--version").!
+    val versionLine = List("gpg", "--version").!!.linesIterator.toList.head
+    println(versionLine)
+    val TaggedVersion = """(\d{1,14})([\.\d{1,14}]*)((?:-\w+)*)""".r
+    val gpgVersion: Long = versionLine.split(" ").last match {
+      case TaggedVersion(m, _, _) => m.toLong
+      case _                         => 0L
+    }
+    // https://dev.gnupg.org/T2313
+    val importCommand =
+      if (gpgVersion < 2L) "--import"
+      else "--batch --import"
     val secret = sys.env("PGP_SECRET")
     if (isAzure) {
       // base64 encoded gpg secrets are too large for Azure variables but
       // they fit within the 4k limit when compressed.
       Files.write(Paths.get("gpg.zip"), Base64.getDecoder.decode(secret))
       s"unzip gpg.zip".!
-      s"gpg --import gpg.key".!
+      s"gpg $importCommand gpg.key".!
     } else {
-      (s"echo $secret" #| "base64 --decode" #| "gpg --import").!
+      (s"echo $secret" #| "base64 --decode" #| s"gpg $importCommand").!
     }
   }
 
