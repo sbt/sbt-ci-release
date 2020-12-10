@@ -489,6 +489,8 @@ project?
 - [scalameta/metabrowse](https://github.com/scalameta/metabrowse/)
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
+- [softwaremill/sttp](https://github.com/softwaremill/sttp)
+- [softwaremill/tapir](https://github.com/softwaremill/tapir)
 - [typelevel/paiges](https://github.com/typelevel/paiges/)
 - [upb-uc4/hlf-api](https://github.com/upb-uc4/hlf-api)
 - [vigoo/clipp](https://github.com/vigoo/clipp/)
