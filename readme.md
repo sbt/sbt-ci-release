@@ -471,6 +471,7 @@ Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
 project?
 [Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
 
+- [AlexITC/scala-js-chrome](https://github.com/AlexITC/scala-js-chrome)
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
 - [bitcoin-s/bitcoin-s](https://github.com/bitcoin-s/bitcoin-s)
 - [coursier/coursier](https://github.com/coursier/coursier/)
@@ -497,6 +498,7 @@ project?
 - [vigoo/desert](https://github.com/vigoo/desert/)
 - [vigoo/prox](https://github.com/vigoo/prox/)
 - [vlovgr/ciris](https://github.com/vlovgr/ciris)
+- [wiringbits/sjs-material-ui-facade](https://github.com/wiringbits/sjs-material-ui-facade)
 
 ## Alternatives
 
