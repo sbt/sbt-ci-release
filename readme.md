@@ -181,6 +181,7 @@ Next, you'll need to declare four environment variables in your CI. Open the
 settings page for your CI provider.
 
 - **GitHub Actions**:
+
   Select `Settings -> Secrets -> New repository secret` to add each of the
   required variables as shown in the next figure:
 
@@ -190,7 +191,8 @@ settings page for your CI provider.
 
   ![env vars 2021-01-27](docs/github-env-vars-2021-01-27.png)
 
-- **Travis CI**: 
+- **Travis CI**:
+
   Make sure that "Build pushed branches" setting is enabled.
 
 Add the following secrets:
