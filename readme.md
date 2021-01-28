@@ -181,9 +181,17 @@ Next, you'll need to declare four environment variables in your CI. Open the
 settings page for your CI provider.
 
 - **GitHub Actions**:
-  https://github.com/olafurpg/sbt-ci-release/settings/secrets
-- **Travis CI**: https://travis-ci.com/scalameta/sbt-scalafmt/settings (Make
-  sure that "Build pushed branches" setting is enabled).
+  Select `Settings -> Secrets -> New repository secret` to add each of the
+  required variables as shown in the next figure:
+
+  ![secrets button 2021-01-27](docs/github-secrets-2021-01-27.png)
+
+  When complete, your secrets settings should look like the following:
+
+  ![env vars 2021-01-27](docs/github-env-vars-2021-01-27.png)
+
+- **Travis CI**: 
+  Make sure that "Build pushed branches" setting is enabled.
 
 Add the following secrets:
 
@@ -225,11 +233,6 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
   staged repository. Useful when, for example, also dealing with non-sbt
   projects to change to `sonatypeReleaseAll`. Defaults to
   `sonatypeBundleRelease` if not provided.
-
-If everything is setup correctly, your secrets settings should look like this if
-you're using GitHub Actions.
-
-![Screenshot 2020-11-03 at 08 45 12](https://user-images.githubusercontent.com/1408093/97960055-ee09c780-1db0-11eb-961b-076d0e503b24.png)
 
 ### GitHub Actions
 
