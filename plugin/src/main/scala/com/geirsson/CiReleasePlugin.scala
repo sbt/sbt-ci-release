@@ -82,7 +82,7 @@ object CiReleasePlugin extends AutoPlugin {
     val importCommand =
       if (gpgVersion < 2L) "--import"
       else "--batch --import"
-    val secret = sys.env("PGP_SECRET")
+    val secret = sys.env("PGP_SECRET").filter(_ > ' ') //remove control characters and space from secret
     if (isAzure) {
       // base64 encoded gpg secrets are too large for Azure variables but
       // they fit within the 4k limit when compressed.
