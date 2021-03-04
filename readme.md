@@ -35,7 +35,7 @@ Let's get started!
   - [Does sbt-ci-release work for sbt 0.13?](#does-sbt-ci-release-work-for-sbt-013)
   - [How do I publish sbt plugins?](#how-do-i-publish-sbt-plugins)
   - [java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff](#javaioioexception-secret-key-ring-doesnt-start-with-secret-key-tag-tag-0xffffffff)
-  - [java.io.IOException: PUT operation to URL https://oss.sonatype.org/content/repositories/snapshots 400: Bad Request](#javaioioexception-put-operation-to-url-httpsosssonatypeorgcontentrepositoriessnapshots-400-bad-request)
+  - [java.io.IOException: PUT operation to URL https://s01.oss.sonatype.org/content/repositories/snapshots 400: Bad Request](#javaioioexception-put-operation-to-url-httpss01osssonatypeorgcontentrepositoriessnapshots-400-bad-request)
   - [java.io.IOException: Access to URL was refused by the server: Unauthorized](#javaioioexception-access-to-url-was-refused-by-the-server-unauthorized)
   - [Failed: signature-staging, failureMessage:Missing Signature:](#failed-signature-staging-failuremessagemissing-signature)
   - [How do I create release notes? Can they be automatically generated?](#how-do-i-create-release-notes-can-they-be-automatically-generated)
@@ -67,7 +67,8 @@ It's my GitHub account https://github.com/olafurpg/
 If you prefer not to save your actual username and password in GitHub Actions
 settings below, generate your user tokens:
 
-- login to https://oss.sonatype.org,
+- login to https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your
+  project was created before February 2021),
 - click your username in the top right, then profiles,
 - in the tab that was opened, click on the top left dropdown, and select "User
   Token",
@@ -209,14 +210,14 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
 
 - `SONATYPE_PASSWORD`: The password you use to log into
-  https://oss.sonatype.org/. Alternatively, the password part of the user token
-  if you generated one above. 
+  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/). Alternatively,
+  the password part of the user token if you generated one above. 
   **For Travis Only:** If the password contains bash special characters,
   make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `SONATYPE_USERNAME`: The username you use to log into
-  https://oss.sonatype.org/. Alternatively, the name part of the user token if
-  you generated one above.
+  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/). Alternatively,
+  the name part of the user token if you generated one above.
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
@@ -437,7 +438,7 @@ setup required. It is not necessary to publish sbt plugins to Bintray.
   wrapped). If you use the GNU coreutils `base64` (default on Ubuntu), pass in
   the `-w0` flag to disable line wrapping.
 
-### java.io.IOException: PUT operation to URL https://oss.sonatype.org/content/repositories/snapshots 400: Bad Request
+### java.io.IOException: PUT operation to URL https://s01.oss.sonatype.org/content/repositories/snapshots 400: Bad Request
 
 This error happens when you publish a non-SNAPSHOT version to the snapshot
 repository. If you pushed a tag, make sure the tag version number starts with
@@ -454,8 +455,9 @@ characters as documented on
 
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
 This failure can happen in case you push a git tag immediately after merging a
-branch into master. A manual workaround is to log into https://oss.sonatype.org/
-and drop the failing repository from the web UI. Alternatively, you can run
+branch into master. A manual workaround is to log into
+https://s01.oss.sonatype.org/ (or https://s01.oss.sonatype.org/) and drop the
+failing repository from the web UI. Alternatively, you can run
 `sonatypeDrop <staging-repo-id>` from the sbt shell instead of using the web UI.
 
 ### How do I create release notes? Can they be automatically generated?
