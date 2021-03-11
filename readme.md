@@ -107,7 +107,7 @@ Next, define publishing settings at the top of `build.sbt`
 ```scala
 inThisBuild(List(
   organization := "com.geirsson",
-  homepage := Some(url("https://github.com/scalameta/sbt-scalafmt")),
+  homepage := Some(url("https://github.com/olafurpg/sbt-ci-release")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -129,8 +129,8 @@ use for this project.
 gpg --gen-key
 ```
 
-- For real name, use "\$PROJECT_NAME bot". For example, in Scalafmt I use
-  "Scalafmt bot"
+- For real name, you can use anything. For example, this repository uses
+  "sbt-ci-release bot".
 - For email, use your own email address
 - For passphrase, generate a random password with a password manager
 
@@ -188,9 +188,9 @@ settings page for your CI provider.
 Add the following secrets:
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
-  gpg key. 
-  **For Travis Only:** If the password contains bash special characters, make sure to escape
-  it by wrapping it in single quotes `'my?pa$$word'`, see
+  gpg key. **For Travis Only:** If the password contains bash special
+  characters, make sure to escape it by wrapping it in single quotes
+  `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
   export from the command line like here below
@@ -210,9 +210,9 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://oss.sonatype.org/. Alternatively, the password part of the user token
-  if you generated one above. 
-  **For Travis Only:** If the password contains bash special characters,
-  make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
+  if you generated one above. **For Travis Only:** If the password contains bash
+  special characters, make sure to escape it by wrapping it in single quotes
+  `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `SONATYPE_USERNAME`: The username you use to log into
   https://oss.sonatype.org/. Alternatively, the name part of the user token if
