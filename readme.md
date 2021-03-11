@@ -473,6 +473,7 @@ project?
 
 - [AlexITC/scala-js-chrome](https://github.com/AlexITC/scala-js-chrome)
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
+- [an-tex/sc8s](https://github.com/an-tex/sc8s)
 - [bitcoin-s/bitcoin-s](https://github.com/bitcoin-s/bitcoin-s)
 - [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
