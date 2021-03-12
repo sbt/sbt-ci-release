@@ -469,7 +469,7 @@ can use [Release Drafter](https://github.com/apps/release-drafter) github app
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
 project?
-[Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
+[Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/main/readme.md)
 
 - [AlexITC/scala-js-chrome](https://github.com/AlexITC/scala-js-chrome)
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
@@ -485,6 +485,7 @@ project?
 - [kubukoz/slick-effect](https://github.com/kubukoz/slick-effect/)
 - [kubukoz/sup](https://github.com/kubukoz/sup/)
 - [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
+- [m2-oss/calypso](https://github.com/m2-oss/calypso)
 - [olafurpg/metaconfig](https://github.com/olafurpg/metaconfig/)
 - [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
 - [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
