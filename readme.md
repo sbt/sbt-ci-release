@@ -185,11 +185,11 @@ settings page for your CI provider.
   Select `Settings -> Secrets -> New repository secret` to add each of the
   required variables as shown in the next figure:
 
-  ![secrets button 2021-01-27](docs/github-secrets-2021-01-27.png)
+  ![github-secrets-2021-01-27](https://user-images.githubusercontent.com/933058/111891685-e0e12400-89b1-11eb-929c-24f5b48b24de.png)
 
   When complete, your secrets settings should look like the following:
 
-  ![env vars 2021-01-27](docs/github-env-vars-2021-01-27.png)
+  ![github-env-vars-2021-01-27](https://user-images.githubusercontent.com/933058/111891688-ec344f80-89b1-11eb-9037-9899e5183ad9.png)
 
 - **Travis CI**:
 
