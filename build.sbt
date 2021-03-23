@@ -27,6 +27,6 @@ lazy val plugin = project
     sbtVersion in pluginCrossBuild := "1.0.4",
     addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1"),
     addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.6"),
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.7"),
     addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.1.1")
   )
