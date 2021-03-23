@@ -6,7 +6,7 @@ This is an sbt plugin to help automate releases to Sonatype and Maven Central
 from GitHub Actions.
 
 - git tag pushes are published as regular releases to Maven Central
-- merge into master commits are published as -SNAPSHOT with a unique version
+- merge into main commits are published as -SNAPSHOT with a unique version
   number for every commit
 
 Beware that publishing from GitHub Actions requires you to expose Sonatype
@@ -239,15 +239,15 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ### GitHub Actions
 
 Run the following command to install the same
-[`release.yml`](https://github.com/olafurpg/sbt-ci-release/blob/master/.github/workflows/release.yml)
+[`release.yml`](https://github.com/olafurpg/sbt-ci-release/blob/main/.github/workflows/release.yml)
 script that is used to release this repository.
 
 ```sh
 mkdir -p .github/workflows && \
-  curl -L https://raw.githubusercontent.com/olafurpg/sbt-ci-release/master/.github/workflows/release.yml > .github/workflows/release.yml
+  curl -L https://raw.githubusercontent.com/olafurpg/sbt-ci-release/main/.github/workflows/release.yml > .github/workflows/release.yml
 ```
 
-Commit the file and merge into master.
+Commit the file and merge into main.
 
 ### Travis
 
