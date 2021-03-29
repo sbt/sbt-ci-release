@@ -506,6 +506,9 @@ project?
 - [vigoo/prox](https://github.com/vigoo/prox/)
 - [vlovgr/ciris](https://github.com/vlovgr/ciris)
 - [wiringbits/sjs-material-ui-facade](https://github.com/wiringbits/sjs-material-ui-facade)
+- [zhongl/config-annotation](https://github.com/zhongl/config-annotation)
+- [zhongl/akka-stream-netty](https://github.com/zhongl/akka-stream-netty)
+- [zhongl/akka-stream-oauth2](https://github.com/zhongl/akka-stream-oauth2)
 
 ## Alternatives
 
