@@ -172,7 +172,8 @@ object CiReleasePlugin extends AutoPlugin {
       publishConfiguration.value.withOverwrite(true),
     publishLocalConfiguration :=
       publishLocalConfiguration.value.withOverwrite(true),
-    publishTo := sonatypePublishToBundle.value
+    publishTo := sonatypePublishToBundle.value,
+    sonatypeCredentialHost := sys.env.getOrElse("SONATYPE_HOST", "oss.sonatype.org"),
   )
 
   def isSnapshotVersion(state: State): Boolean = {

@@ -235,6 +235,7 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
   staged repository. Useful when, for example, also dealing with non-sbt
   projects to change to `sonatypeReleaseAll`. Defaults to
   `sonatypeBundleRelease` if not provided.
+- (optional) `SONATYPE_HOST`: By default, this plugin is configured to use the legacy Sonatype repository `oss.sonatype.org`. If you created a new account on or after February 2021, add this env variable with your sonatype host e.g `s01.oss.sonatype.org`.
 
 ### GitHub Actions
 
