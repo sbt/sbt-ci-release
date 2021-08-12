@@ -470,6 +470,11 @@ because commit messages don't often communicate the end user impact well. You
 can use [Release Drafter](https://github.com/apps/release-drafter) github app
 (or the Github Action) to help you craft release notes.
 
+### My build suddenly fails with [info] gpg: no default secret key: No secret key
+
+Make sure your pgp key did not expire. If it expired you have to change the
+expiry date and reupload it. See: https://github.com/olafurpg/sbt-ci-release#gpg.
+
 ## Adopters
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
