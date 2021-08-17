@@ -82,7 +82,7 @@ Next, install this plugin in `project/plugins.sbt`
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.6")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.7")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
@@ -470,6 +470,11 @@ because commit messages don't often communicate the end user impact well. You
 can use [Release Drafter](https://github.com/apps/release-drafter) github app
 (or the Github Action) to help you craft release notes.
 
+### My build suddenly fails with [info] gpg: no default secret key: No secret key
+
+Make sure your pgp key did not expire. If it expired you have to change the
+expiry date and reupload it. See: https://github.com/olafurpg/sbt-ci-release#gpg.
+
 ## Adopters
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
@@ -506,6 +511,9 @@ project?
 - [vigoo/prox](https://github.com/vigoo/prox/)
 - [vlovgr/ciris](https://github.com/vlovgr/ciris)
 - [wiringbits/sjs-material-ui-facade](https://github.com/wiringbits/sjs-material-ui-facade)
+- [zhongl/config-annotation](https://github.com/zhongl/config-annotation)
+- [zhongl/akka-stream-netty](https://github.com/zhongl/akka-stream-netty)
+- [zhongl/akka-stream-oauth2](https://github.com/zhongl/akka-stream-oauth2)
 
 ## Alternatives
 
