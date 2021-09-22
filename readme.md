@@ -6,7 +6,7 @@ This is an sbt plugin to help automate releases to Sonatype and Maven Central
 from GitHub Actions.
 
 - git tag pushes are published as regular releases to Maven Central
-- merge into master commits are published as -SNAPSHOT with a unique version
+- merge into main commits are published as -SNAPSHOT with a unique version
   number for every commit
 
 Beware that publishing from GitHub Actions requires you to expose Sonatype
@@ -83,7 +83,7 @@ Next, install this plugin in `project/plugins.sbt`
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.5")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.7")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
@@ -108,7 +108,7 @@ Next, define publishing settings at the top of `build.sbt`
 ```scala
 inThisBuild(List(
   organization := "com.geirsson",
-  homepage := Some(url("https://github.com/scalameta/sbt-scalafmt")),
+  homepage := Some(url("https://github.com/olafurpg/sbt-ci-release")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -130,8 +130,8 @@ use for this project.
 gpg --gen-key
 ```
 
-- For real name, use "\$PROJECT_NAME bot". For example, in Scalafmt I use
-  "Scalafmt bot"
+- For real name, you can use anything. For example, this repository uses
+  "sbt-ci-release bot".
 - For email, use your own email address
 - For passphrase, generate a random password with a password manager
 
@@ -182,16 +182,26 @@ Next, you'll need to declare four environment variables in your CI. Open the
 settings page for your CI provider.
 
 - **GitHub Actions**:
-  https://github.com/olafurpg/sbt-ci-release/settings/secrets
-- **Travis CI**: https://travis-ci.com/scalameta/sbt-scalafmt/settings (Make
-  sure that "Build pushed branches" setting is enabled).
+
+  Select `Settings -> Secrets -> New repository secret` to add each of the
+  required variables as shown in the next figure:
+
+  ![github-secrets-2021-01-27](https://user-images.githubusercontent.com/933058/111891685-e0e12400-89b1-11eb-929c-24f5b48b24de.png)
+
+  When complete, your secrets settings should look like the following:
+
+  ![github-env-vars-2021-01-27](https://user-images.githubusercontent.com/933058/111891688-ec344f80-89b1-11eb-9037-9899e5183ad9.png)
+
+- **Travis CI**:
+
+  Make sure that "Build pushed branches" setting is enabled.
 
 Add the following secrets:
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
-  gpg key. 
-  **For Travis Only:** If the password contains bash special characters, make sure to escape
-  it by wrapping it in single quotes `'my?pa$$word'`, see
+  gpg key. **For Travis Only:** If the password contains bash special
+  characters, make sure to escape it by wrapping it in single quotes
+  `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
   export from the command line like here below
@@ -210,7 +220,8 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
 
 - `SONATYPE_PASSWORD`: The password you use to log into
-  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/). Alternatively,
+  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
+  account was created before February 2021). Alternatively,
   the password part of the user token if you generated one above. 
   **For Travis Only:** If the password contains bash special characters,
   make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
@@ -227,23 +238,18 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
   projects to change to `sonatypeReleaseAll`. Defaults to
   `sonatypeBundleRelease` if not provided.
 
-If everything is setup correctly, your secrets settings should look like this if
-you're using GitHub Actions.
-
-![Screenshot 2020-11-03 at 08 45 12](https://user-images.githubusercontent.com/1408093/97960055-ee09c780-1db0-11eb-961b-076d0e503b24.png)
-
 ### GitHub Actions
 
 Run the following command to install the same
-[`release.yml`](https://github.com/olafurpg/sbt-ci-release/blob/master/.github/workflows/release.yml)
+[`release.yml`](https://github.com/olafurpg/sbt-ci-release/blob/main/.github/workflows/release.yml)
 script that is used to release this repository.
 
 ```sh
 mkdir -p .github/workflows && \
-  curl -L https://raw.githubusercontent.com/olafurpg/sbt-ci-release/master/.github/workflows/release.yml > .github/workflows/release.yml
+  curl -L https://raw.githubusercontent.com/olafurpg/sbt-ci-release/main/.github/workflows/release.yml > .github/workflows/release.yml
 ```
 
-Commit the file and merge into master.
+Commit the file and merge into main.
 
 ### Travis
 
@@ -467,14 +473,20 @@ because commit messages don't often communicate the end user impact well. You
 can use [Release Drafter](https://github.com/apps/release-drafter) github app
 (or the Github Action) to help you craft release notes.
 
+### My build suddenly fails with [info] gpg: no default secret key: No secret key
+
+Make sure your pgp key did not expire. If it expired you have to change the
+expiry date and reupload it. See: https://github.com/olafurpg/sbt-ci-release#gpg.
+
 ## Adopters
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
 project?
-[Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/master/readme.md)
+[Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/main/readme.md)
 
 - [AlexITC/scala-js-chrome](https://github.com/AlexITC/scala-js-chrome)
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
+- [an-tex/sc8s](https://github.com/an-tex/sc8s)
 - [bitcoin-s/bitcoin-s](https://github.com/bitcoin-s/bitcoin-s)
 - [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
@@ -486,6 +498,7 @@ project?
 - [kubukoz/slick-effect](https://github.com/kubukoz/slick-effect/)
 - [kubukoz/sup](https://github.com/kubukoz/sup/)
 - [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
+- [m2-oss/calypso](https://github.com/m2-oss/calypso)
 - [olafurpg/metaconfig](https://github.com/olafurpg/metaconfig/)
 - [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
 - [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
@@ -501,6 +514,9 @@ project?
 - [vigoo/prox](https://github.com/vigoo/prox/)
 - [vlovgr/ciris](https://github.com/vlovgr/ciris)
 - [wiringbits/sjs-material-ui-facade](https://github.com/wiringbits/sjs-material-ui-facade)
+- [zhongl/config-annotation](https://github.com/zhongl/config-annotation)
+- [zhongl/akka-stream-netty](https://github.com/zhongl/akka-stream-netty)
+- [zhongl/akka-stream-oauth2](https://github.com/zhongl/akka-stream-oauth2)
 
 ## Alternatives
 
