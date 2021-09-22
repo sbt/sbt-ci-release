@@ -68,7 +68,7 @@ If you prefer not to save your actual username and password in GitHub Actions
 settings below, generate your user tokens:
 
 - login to https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your
-  project was created before February 2021),
+  Sonatype account was created before February 2021),
 - click your username in the top right, then profiles,
 - in the tab that was opened, click on the top left dropdown, and select "User
   Token",
@@ -221,14 +221,15 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
-  account was created before February 2021). Alternatively,
-  the password part of the user token if you generated one above. 
-  **For Travis Only:** If the password contains bash special characters,
-  make sure to escape it by wrapping it in single quotes `'my?pa$$word'`, see
+  account was created before February 2021). Alternatively, the password part of
+  the user token if you generated one above. **For Travis Only:** If the
+  password contains bash special characters, make sure to escape it by wrapping
+  it in single quotes `'my?pa$$word'`, see
   [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 - `SONATYPE_USERNAME`: The username you use to log into
-  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/). Alternatively,
-  the name part of the user token if you generated one above.
+  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
+  account was created before 2021). Alternatively, the name part of the user
+  token if you generated one above.
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
@@ -462,9 +463,10 @@ characters as documented on
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
 This failure can happen in case you push a git tag immediately after merging a
 branch into master. A manual workaround is to log into
-https://s01.oss.sonatype.org/ (or https://s01.oss.sonatype.org/) and drop the
-failing repository from the web UI. Alternatively, you can run
-`sonatypeDrop <staging-repo-id>` from the sbt shell instead of using the web UI.
+https://s01.oss.sonatype.org/ (or https://s01.oss.sonatype.org/ if your Sonatype
+account was created before February 2021) and drop the failing repository from
+the web UI. Alternatively, you can run `sonatypeDrop <staging-repo-id>` from the
+sbt shell instead of using the web UI.
 
 ### How do I create release notes? Can they be automatically generated?
 
@@ -476,7 +478,8 @@ can use [Release Drafter](https://github.com/apps/release-drafter) github app
 ### My build suddenly fails with [info] gpg: no default secret key: No secret key
 
 Make sure your pgp key did not expire. If it expired you have to change the
-expiry date and reupload it. See: https://github.com/olafurpg/sbt-ci-release#gpg.
+expiry date and reupload it. See:
+https://github.com/olafurpg/sbt-ci-release#gpg.
 
 ## Adopters
 
