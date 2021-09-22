@@ -83,7 +83,7 @@ Next, install this plugin in `project/plugins.sbt`
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
-addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "NOT_RELEASED_YET")
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.9")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
