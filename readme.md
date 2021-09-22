@@ -1,6 +1,6 @@
 # sbt-ci-release
 
-![CI](https://github.com/olafurpg/sbt-ci-release/workflows/CI/badge.svg)
+![CI](https://github.com/sbt/sbt-ci-release/workflows/CI/badge.svg)
 
 This is an sbt plugin to help automate releases to Sonatype and Maven Central
 from GitHub Actions.
@@ -56,10 +56,10 @@ is a template you can use to write the Sonatype issue:
 
 ```
 Title:
-Publish rights for io.github.olafurpg
+Publish rights for io.github.sbt
 Description:
-Hi, I would like to publish under the groupId: io.github.olafurpg.
-It's my GitHub account https://github.com/olafurpg/
+Hi, I would like to publish under the groupId: io.github.sbt.
+It's my GitHub account https://github.com/sbt/
 ```
 
 ### Optional: create user tokens
@@ -79,11 +79,11 @@ settings below, generate your user tokens:
 
 Next, install this plugin in `project/plugins.sbt`
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.geirsson/sbt-ci-release/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.geirsson/sbt-ci-release)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.sbt/sbt-ci-release/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.sbt/sbt-ci-release)
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.7")
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "NOT_RELEASED_YET")
 ```
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
@@ -107,8 +107,8 @@ Next, define publishing settings at the top of `build.sbt`
 
 ```scala
 inThisBuild(List(
-  organization := "com.geirsson",
-  homepage := Some(url("https://github.com/olafurpg/sbt-ci-release")),
+  organization := "com.github.sbt",
+  homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -242,12 +242,12 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ### GitHub Actions
 
 Run the following command to install the same
-[`release.yml`](https://github.com/olafurpg/sbt-ci-release/blob/main/.github/workflows/release.yml)
+[`release.yml`](https://github.com/sbt/sbt-ci-release/blob/main/.github/workflows/release.yml)
 script that is used to release this repository.
 
 ```sh
 mkdir -p .github/workflows && \
-  curl -L https://raw.githubusercontent.com/olafurpg/sbt-ci-release/main/.github/workflows/release.yml > .github/workflows/release.yml
+  curl -L https://raw.githubusercontent.com/sbt/sbt-ci-release/main/.github/workflows/release.yml > .github/workflows/release.yml
 ```
 
 Commit the file and merge into main.
@@ -305,7 +305,7 @@ Notes:
 - the `name: compile` part is optional but it makes it easy to distinguish
   different jobs in the Travis UI
 
-![build__48_-_olafurpg_sbt-ci-release_-_travis_ci](https://user-images.githubusercontent.com/1408093/41810442-a44ef526-76fe-11e8-92f4-4c4b61af4d38.jpg)
+![build__48_-_sbt-ci-release_-_travis_ci](https://user-images.githubusercontent.com/1408093/41810442-a44ef526-76fe-11e8-92f4-4c4b61af4d38.jpg)
 
 ## Git
 
@@ -395,7 +395,7 @@ resolvers += Resolver.sonatypeRepo("public")
 interface to check if a release was successful without opening sbt
 
 ```bash
-coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0 -r sonatype:public
+coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0 -r sonatype:public
 ```
 
 ### How do I depend on the SNAPSHOT releases?
@@ -409,20 +409,20 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 (optional) With coursier you can do the same thing with `-r sonatype:snapshots`
 
 ```bash
-coursier fetch com.geirsson:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapshots
+coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapshots
 ```
 
 ### What about other CIs environments than Travis?
 
 - This project uses a github workflow,
-  [which you can review here](https://github.com/olafurpg/sbt-ci-release/tree/master/.github/workflows)
+  [which you can review here](https://github.com/sbt/sbt-ci-release/tree/master/.github/workflows)
 - [CircleCI](https://circleci.com/) is supported
 
 You can try
 [sbt-release-early](https://github.com/scalacenter/sbt-release-early).
 
 Alternatively, the source code for sbt-ci-release is only ~50 loc, see
-[CiReleasePlugin.scala](https://github.com/olafurpg/sbt-ci-release/blob/master/plugin/src/main/scala/com/geirsson/CiReleasePlugin.scala).
+[CiReleasePlugin.scala](https://github.com/sbt/sbt-ci-release/blob/master/plugin/src/main/scala/com.github.sbt/CiReleasePlugin.scala).
 You can copy-paste it to `project/` of your build and tweak the settings for
 your environment.
 
@@ -479,13 +479,13 @@ can use [Release Drafter](https://github.com/apps/release-drafter) github app
 
 Make sure your pgp key did not expire. If it expired you have to change the
 expiry date and reupload it. See:
-https://github.com/olafurpg/sbt-ci-release#gpg.
+https://github.com/sbt/sbt-ci-release#gpg.
 
 ## Adopters
 
 Below is a non-exhaustive list of projects using sbt-ci-release. Don't see your
 project?
-[Add it in a PR!](https://github.com/olafurpg/sbt-ci-release/edit/main/readme.md)
+[Add it in a PR!](https://github.com/sbt/sbt-ci-release/edit/main/readme.md)
 
 - [AlexITC/scala-js-chrome](https://github.com/AlexITC/scala-js-chrome)
 - [almond-sh/almond](https://github.com/almond-sh/almond/)
@@ -502,7 +502,7 @@ project?
 - [kubukoz/sup](https://github.com/kubukoz/sup/)
 - [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
 - [m2-oss/calypso](https://github.com/m2-oss/calypso)
-- [olafurpg/metaconfig](https://github.com/olafurpg/metaconfig/)
+- [scalameta/metaconfig](https://github.com/scalameta/metaconfig/)
 - [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
 - [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
 - [scalameta/metabrowse](https://github.com/scalameta/metabrowse/)
