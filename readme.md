@@ -422,7 +422,7 @@ You can try
 [sbt-release-early](https://github.com/scalacenter/sbt-release-early).
 
 Alternatively, the source code for sbt-ci-release is only ~50 loc, see
-[CiReleasePlugin.scala](https://github.com/sbt/sbt-ci-release/blob/master/plugin/src/main/scala/com.github.sbt/CiReleasePlugin.scala).
+[CiReleasePlugin.scala](https://github.com/sbt/sbt-ci-release/blob/main/plugin/src/main/scala/com/geirsson/CiReleasePlugin.scala).
 You can copy-paste it to `project/` of your build and tweak the settings for
 your environment.
 
