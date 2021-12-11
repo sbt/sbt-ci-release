@@ -458,6 +458,14 @@ Make sure that `SONATYPE_PASSWORD` uses proper escaping if it contains special
 characters as documented on
 [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 
+If your sonatype account is new (created after Feb 2021), then the default server
+location inherited from the the `sbt-sonatype` plugin will not work, and you should add
+```
+sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+```
+to your root project
+
 ### Failed: signature-staging, failureMessage:Missing Signature:
 
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
