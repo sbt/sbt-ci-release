@@ -121,6 +121,14 @@ inThisBuild(List(
 ))
 ```
 
+If your sonatype account is new (created after Feb 2021), then the default server
+location inherited from the the `sbt-sonatype` plugin will not work, and you should
+also include the following overrides in your publishing settings
+```scala
+sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+```
+
 ## GPG
 
 Next, create a fresh gpg key that you will share with GitHub Actions and only
@@ -457,14 +465,6 @@ repository. If you pushed a tag, make sure the tag version number starts with
 Make sure that `SONATYPE_PASSWORD` uses proper escaping if it contains special
 characters as documented on
 [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
-
-If your sonatype account is new (created after Feb 2021), then the default server
-location inherited from the the `sbt-sonatype` plugin will not work, and you should add
-```
-sonatypeCredentialHost := "s01.oss.sonatype.org"
-sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
-```
-to your root project
 
 ### Failed: signature-staging, failureMessage:Missing Signature:
 
