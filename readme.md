@@ -227,6 +227,9 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
 
+*Notice: If you will try to display base64 encoded string in the termianl like zsh or fish 
+they might include additional `%` character at the end of the output to indicate end of the content.
+
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
   account was created before February 2021). Alternatively, the password part of
