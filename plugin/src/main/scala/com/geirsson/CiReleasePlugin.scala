@@ -1,7 +1,7 @@
 package com.geirsson
 
-import com.typesafe.sbt.GitPlugin
-import com.typesafe.sbt.SbtGit.GitKeys
+import com.github.sbt.git.GitPlugin
+import com.github.sbt.git.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.SbtPgp.autoImport._
 import java.nio.file.Files
