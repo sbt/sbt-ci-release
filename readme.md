@@ -398,6 +398,13 @@ artifacts with
 resolvers += Resolver.sonatypeRepo("public")
 ```
 
+Use this instead if your Sonatype account was created after February 2021
+
+```scala
+resolvers +=
+  "Sonatype OSS Releases" at "https://s01.oss.sonatype.org/content/repositories/releases"
+```
+
 (optional) Use the
 [coursier](https://github.com/coursier/coursier/#command-line) command line
 interface to check if a release was successful without opening sbt
@@ -405,6 +412,8 @@ interface to check if a release was successful without opening sbt
 ```bash
 coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0 -r sonatype:public
 ```
+
+Use `-r https://s01.oss.sonatype.org/content/repositories/releases` instead if your Sonatype account was created after February 2021.
 
 ### How do I depend on the SNAPSHOT releases?
 
@@ -414,11 +423,22 @@ Add the following setting
 resolvers += Resolver.sonatypeRepo("snapshots")
 ```
 
+or
+
+```scala
+resolvers +=
+  "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots"
+```
+
+if your Sonatype account was created after February 2021.
+
 (optional) With coursier you can do the same thing with `-r sonatype:snapshots`
 
 ```bash
 coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapshots
 ```
+
+Use `-r https://s01.oss.sonatype.org/content/repositories/snapshots` instead if your Sonatype account was created after February 2021.
 
 ### What about other CIs environments than Travis?
 
@@ -471,7 +491,7 @@ characters as documented on
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
 This failure can happen in case you push a git tag immediately after merging a
 branch into master. A manual workaround is to log into
-https://s01.oss.sonatype.org/ (or https://s01.oss.sonatype.org/ if your Sonatype
+https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
 account was created before February 2021) and drop the failing repository from
 the web UI. Alternatively, you can run `sonatypeDrop <staging-repo-id>` from the
 sbt shell instead of using the web UI.
