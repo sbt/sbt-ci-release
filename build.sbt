@@ -18,15 +18,15 @@ inThisBuild(
 
 onLoadMessage := s"Welcome to sbt-ci-release ${version.value}"
 
-skip in publish := true // don't publish the root project
+publish / skip := true // don't publish the root project
 
 lazy val plugin = project
   .enablePlugins(SbtPlugin)
   .settings(
     moduleName := "sbt-ci-release",
-    sbtVersion in pluginCrossBuild := "1.0.4",
+    pluginCrossBuild / sbtVersion := "1.0.4",
     addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1"),
-    addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.2"),
+    addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.0"),
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.10"),
     addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
   )
