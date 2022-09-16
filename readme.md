@@ -109,6 +109,7 @@ Next, define publishing settings at the top of `build.sbt`
 inThisBuild(List(
   organization := "com.github.sbt",
   homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
+  // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -141,7 +142,8 @@ gpg --gen-key
 - For real name, you can use anything. For example, this repository uses
   "sbt-ci-release bot".
 - For email, use your own email address
-- For passphrase, generate a random password with a password manager
+- For passphrase, generate a random password with a password manager. This will be the
+  environment variables PGP_PASSPHRASE in your CI. Take not of `PGP_PASSPHRASE`.
 
 At the end you'll see output like this
 
@@ -227,6 +229,8 @@ gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
 gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
 
+*If you try to display the base64 encoded string in the terminal, some shells (like zsh or fish)
+may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.*
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
   account was created before February 2021). Alternatively, the password part of
@@ -398,6 +402,13 @@ artifacts with
 resolvers += Resolver.sonatypeRepo("public")
 ```
 
+Use this instead if your Sonatype account was created after February 2021
+
+```scala
+resolvers +=
+  "Sonatype OSS Releases" at "https://s01.oss.sonatype.org/content/repositories/releases"
+```
+
 (optional) Use the
 [coursier](https://github.com/coursier/coursier/#command-line) command line
 interface to check if a release was successful without opening sbt
@@ -405,6 +416,8 @@ interface to check if a release was successful without opening sbt
 ```bash
 coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0 -r sonatype:public
 ```
+
+Use `-r https://s01.oss.sonatype.org/content/repositories/releases` instead if your Sonatype account was created after February 2021.
 
 ### How do I depend on the SNAPSHOT releases?
 
@@ -414,11 +427,22 @@ Add the following setting
 resolvers += Resolver.sonatypeRepo("snapshots")
 ```
 
+or
+
+```scala
+resolvers +=
+  "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots"
+```
+
+if your Sonatype account was created after February 2021.
+
 (optional) With coursier you can do the same thing with `-r sonatype:snapshots`
 
 ```bash
 coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapshots
 ```
+
+Use `-r https://s01.oss.sonatype.org/content/repositories/snapshots` instead if your Sonatype account was created after February 2021.
 
 ### What about other CIs environments than Travis?
 
@@ -471,7 +495,7 @@ characters as documented on
 Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
 This failure can happen in case you push a git tag immediately after merging a
 branch into master. A manual workaround is to log into
-https://s01.oss.sonatype.org/ (or https://s01.oss.sonatype.org/ if your Sonatype
+https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
 account was created before February 2021) and drop the failing repository from
 the web UI. Alternatively, you can run `sonatypeDrop <staging-repo-id>` from the
 sbt shell instead of using the web UI.

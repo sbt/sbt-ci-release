@@ -1,9 +1,11 @@
 package com.geirsson
 
-import com.typesafe.sbt.GitPlugin
-import com.typesafe.sbt.SbtGit.GitKeys
+import com.geirsson.PipeFail.PipeFailOps
+import com.github.sbt.git.GitPlugin
+import com.github.sbt.git.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.SbtPgp.autoImport._
+
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.charset.StandardCharsets
@@ -14,6 +16,7 @@ import sbt._
 import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport._
+
 import scala.deprecated
 import scala.sys.process._
 import scala.util.control.NonFatal
@@ -76,7 +79,7 @@ object CiReleasePlugin extends AutoPlugin {
     val TaggedVersion = """(\d{1,14})([\.\d{1,14}]*)((?:-\w+)*)""".r
     val gpgVersion: Long = versionLine.split(" ").last match {
       case TaggedVersion(m, _, _) => m.toLong
-      case _                         => 0L
+      case _                      => 0L
     }
     // https://dev.gnupg.org/T2313
     val importCommand =
@@ -90,7 +93,7 @@ object CiReleasePlugin extends AutoPlugin {
       s"unzip gpg.zip".!
       s"gpg $importCommand gpg.key".!
     } else {
-      (s"echo $secret" #| "base64 --decode" #| s"gpg $importCommand").!
+      (s"echo $secret" #|! "base64 --decode" #|! s"gpg $importCommand").!
     }
   }
 
@@ -108,9 +111,10 @@ object CiReleasePlugin extends AutoPlugin {
       case None =>
         import scala.sys.process._
         val identifier = """([^\/]+?)"""
-        val GitHubHttps = s"https://github.com/$identifier/$identifier(?:\\.git)?".r
-        val GitHubGit   = s"git://github.com:$identifier/$identifier(?:\\.git)?".r
-        val GitHubSsh   = s"git@github.com:$identifier/$identifier(?:\\.git)?".r
+        val GitHubHttps =
+          s"https://github.com/$identifier/$identifier(?:\\.git)?".r
+        val GitHubGit = s"git://github.com:$identifier/$identifier(?:\\.git)?".r
+        val GitHubSsh = s"git@github.com:$identifier/$identifier(?:\\.git)?".r
         try {
           val remote = List("git", "ls-remote", "--get-url", "origin").!!.trim()
           remote match {
