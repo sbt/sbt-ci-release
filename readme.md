@@ -109,6 +109,7 @@ Next, define publishing settings at the top of `build.sbt`
 inThisBuild(List(
   organization := "com.github.sbt",
   homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
+  // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -141,7 +142,8 @@ gpg --gen-key
 - For real name, you can use anything. For example, this repository uses
   "sbt-ci-release bot".
 - For email, use your own email address
-- For passphrase, generate a random password with a password manager
+- For passphrase, generate a random password with a password manager. This will be the
+  environment variables PGP_PASSPHRASE in your CI. Take not of `PGP_PASSPHRASE`.
 
 At the end you'll see output like this
 
