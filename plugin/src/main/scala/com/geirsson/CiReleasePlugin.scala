@@ -1,8 +1,8 @@
 package com.geirsson
 
 import com.geirsson.PipeFail.PipeFailOps
-import com.typesafe.sbt.GitPlugin
-import com.typesafe.sbt.SbtGit.GitKeys
+import com.github.sbt.git.GitPlugin
+import com.github.sbt.git.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.SbtPgp.autoImport._
 
