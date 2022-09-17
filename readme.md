@@ -178,7 +178,7 @@ gpg --armor --export $LONG_ID | xclip
 gpg --armor --export %LONG_ID%
 ```
 
-and post the signature to a keyserver: http://keyserver.ubuntu.com:11371/
+and post the signature to a keyserver: https://keyserver.ubuntu.com/
 
 1. Select "Submit Key"
 2. Paste in the exported public key
