@@ -126,7 +126,7 @@ If your sonatype account is new (created after Feb 2021), then the default serve
 location inherited from the the `sbt-sonatype` plugin will not work, and you should
 also include the following overrides in your publishing settings
 ```scala
-sonatypeCredentialHost := "s01.oss.sonatype.org"
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 ```
 
@@ -185,6 +185,23 @@ and post the signature to a keyserver: https://keyserver.ubuntu.com/
 3. Click on "Submit Public Key".
 
 ![Ubuntu Keyserver](https://i.imgur.com/njvOpmq.png)
+
+or run:
+
+```bash
+# macOS
+gpg --keyserver hkp://keyserver.ubuntu.com --send-key $LONG_ID && \
+ gpg --keyserver hkp://pgp.mit.edu --send-key $LONG_ID && \
+ gpg --keyserver hkp://pool.sks-keyservers.net --send-key $LONG_ID
+# linux
+gpg --keyserver hkp://keyserver.ubuntu.com --send-key $LONG_ID && \
+ gpg --keyserver hkp://pgp.mit.edu --send-key $LONG_ID && \
+ gpg --keyserver hkp://pool.sks-keyservers.net --send-key $LONG_ID
+# Windows
+gpg --keyserver hkp://keyserver.ubuntu.com --send-key %LONG_ID% && \
+ gpg --keyserver hkp://pgp.mit.edu --send-key %LONG_ID% && \
+ gpg --keyserver hkp://pool.sks-keyservers.net --send-key %LONG_ID%
+```
 
 ## Secrets
 
