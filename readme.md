@@ -143,7 +143,7 @@ gpg --gen-key
   "sbt-ci-release bot".
 - For email, use your own email address
 - For passphrase, generate a random password with a password manager. This will be the
-  environment variables PGP_PASSPHRASE in your CI. Take not of `PGP_PASSPHRASE`.
+  environment variables PGP_PASSPHRASE in your CI. Take note of `PGP_PASSPHRASE`.
 
 At the end you'll see output like this
 
