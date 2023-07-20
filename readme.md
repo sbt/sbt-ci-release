@@ -416,7 +416,7 @@ Yes! As soon as CI "closes" the staging repository you can depend on those
 artifacts with
 
 ```scala
-resolvers += Resolver.sonatypeRepo("public")
+resolvers ++= Resolver.sonatypeOssRepos("staging")
 ```
 
 Use this instead if your Sonatype account was created after February 2021
