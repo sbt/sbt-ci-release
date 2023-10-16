@@ -235,7 +235,7 @@ Add the following secrets:
 
 ```
 # macOS
-gpg --armor --export-secret-keys $LONG_ID | base64 | pbcopy
+gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | pbcopy
 # Ubuntu (assuming GNU base64)
 gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip
 # Arch
