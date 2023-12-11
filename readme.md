@@ -210,7 +210,7 @@ settings page for your CI provider.
 
 - **GitHub Actions**:
 
-  Select `Settings -> Secrets -> New repository secret` to add each of the
+  Select `Settings -> Secrets and variables -> Actions -> New repository secret` to add each of the
   required variables as shown in the next figure:
 
   ![github-secrets-2021-01-27](https://user-images.githubusercontent.com/933058/111891685-e0e12400-89b1-11eb-929c-24f5b48b24de.png)
