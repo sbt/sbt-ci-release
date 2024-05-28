@@ -551,6 +551,7 @@ project?
 - [kubukoz/sup](https://github.com/kubukoz/sup/)
 - [kubukoz/vivalidi](https://github.com/kubukoz/vivalidi/)
 - [m2-oss/calypso](https://github.com/m2-oss/calypso)
+- [snapi](https://github.com/raw-labs/snapi)
 - [scalameta/metaconfig](https://github.com/scalameta/metaconfig/)
 - [scala/sbt-scala-module](https://github.com/scala/sbt-scala-module)
 - [scalacenter/scalafix](https://github.com/scalacenter/scalafix)
