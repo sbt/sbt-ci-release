@@ -441,7 +441,7 @@ Use `-r https://s01.oss.sonatype.org/content/repositories/releases` instead if y
 Add the following setting
 
 ```scala
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Opts.resolver.sonatypeOssSnapshots
 ```
 
 or
