@@ -42,17 +42,17 @@ object CiReleasePlugin extends AutoPlugin {
         .exists(_.startsWith("refs/tags"))
   def releaseTag: String =
     Option(System.getenv("TRAVIS_TAG"))
-      .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
-      .orElse(Option(System.getenv("GITHUB_REF")))
       .orElse(Option(System.getenv("CIRCLE_TAG")))
       .orElse(Option(System.getenv("CI_COMMIT_TAG")))
+      .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
+      .orElse(Option(System.getenv("GITHUB_REF")))
       .getOrElse("<unknown>")
   def currentBranch: String =
     Option(System.getenv("TRAVIS_BRANCH"))
-      .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
-      .orElse(Option(System.getenv("GITHUB_REF")))
       .orElse(Option(System.getenv("CIRCLE_BRANCH")))
       .orElse(Option(System.getenv("CI_COMMIT_BRANCH")))
+      .orElse(Option(System.getenv("BUILD_SOURCEBRANCH")))
+      .orElse(Option(System.getenv("GITHUB_REF")))
       .getOrElse("<unknown>")
 
   @deprecated("Deprecated, please use isSecure", "1.4.32")
