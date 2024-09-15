@@ -25,6 +25,14 @@ import xerial.sbt.Sonatype.autoImport._
 
 object CiReleasePlugin extends AutoPlugin {
 
+  object autoImport {
+    val cireleasePublishStableRelease =
+      settingKey[Boolean](
+        "Whether to release a stable version, instead of SNAPSHOT. By default, stable releases take place when on a tag."
+      )
+  }
+  import autoImport._
+
   override def trigger = allRequirements
   override def requires =
     JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin && Sonatype
@@ -105,7 +113,8 @@ object CiReleasePlugin extends AutoPlugin {
     )
 
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
-    dynverSonatypeSnapshots := true,
+    cireleasePublishStableRelease := isTag,
+    dynverSonatypeSnapshots := !cireleasePublishStableRelease.value,
     scmInfo ~= {
       case Some(info) => Some(info)
       case None =>
@@ -145,27 +154,28 @@ object CiReleasePlugin extends AutoPlugin {
         // https://github.com/olafurpg/sbt-ci-release/issues/64
         val reloadKeyFiles =
           "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
-        if (!isTag) {
-          if (isSnapshotVersion(currentState)) {
-            println(s"No tag push, publishing SNAPSHOT")
-            reloadKeyFiles ::
-              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
-              currentState
-          } else {
-            // Happens when a tag is pushed right after merge causing the master branch
-            // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
-            println(
-              "Snapshot releases must have -SNAPSHOT version number, doing nothing"
-            )
-            currentState
-          }
-        } else {
-          println("Tag push detected, publishing a stable release")
+        val publishRelease = reloadKeyFiles ::
+          sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
+          sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+          sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
+          currentState
+        if (cireleasePublishStableRelease.in(ThisBuild).value) {
+          println(
+            "Tag push detected (or overridden by the user), publishing a stable release"
+          )
+          publishRelease
+        } else if (isSnapshotVersion(currentState)) {
+          println(s"No tag push, publishing SNAPSHOT")
           reloadKeyFiles ::
-            sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
-            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
+            sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
             currentState
+        } else {
+          // Happens when a tag is pushed right after merge causing the master branch
+          // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
+          println(
+            "Snapshot releases must have -SNAPSHOT version number, doing nothing"
+          )
+          currentState
         }
       }
     }
