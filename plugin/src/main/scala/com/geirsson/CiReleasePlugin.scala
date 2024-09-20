@@ -133,6 +133,8 @@ object CiReleasePlugin extends AutoPlugin {
     publishArtifact.in(Test) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
+      val shouldDeployToSonatypeCentral = isDeploySetToSonatypeCentral(currentState)
+      val isSnapshot = isSnapshotVersion(currentState)
       if (!isSecure) {
         println("No access to secret variables, doing nothing")
         currentState
@@ -145,27 +147,45 @@ object CiReleasePlugin extends AutoPlugin {
         // https://github.com/olafurpg/sbt-ci-release/issues/64
         val reloadKeyFiles =
           "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
-        if (!isTag) {
-          if (isSnapshotVersion(currentState)) {
-            println(s"No tag push, publishing SNAPSHOT")
-            reloadKeyFiles ::
-              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
-              currentState
-          } else {
-            // Happens when a tag is pushed right after merge causing the master branch
-            // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
-            println(
-              "Snapshot releases must have -SNAPSHOT version number, doing nothing"
-            )
+
+        if (shouldDeployToSonatypeCentral) {
+          if (isSnapshot) {
+            println(s"Sonatype Central does not accept snapshots, only official releases. Aborting release.")
             currentState
+          } else if (!isTag) {
+            println(s"No tag published. Cannot publish an official release without a tag and Sonatype Central does not accept snapshot releases. Aborting release.")
+            currentState
+          } else {
+            println("Tag push detected, publishing a stable release")
+            reloadKeyFiles ::
+              sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
+              sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+              sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeCentralRelease") ::
+              currentState
           }
         } else {
-          println("Tag push detected, publishing a stable release")
-          reloadKeyFiles ::
-            sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-            sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
-            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
-            currentState
+          if (!isTag) {
+            if (isSnapshot) {
+              println(s"No tag push, publishing SNAPSHOT")
+              reloadKeyFiles ::
+                sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
+                currentState
+            } else {
+              // Happens when a tag is pushed right after merge causing the master branch
+              // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
+              println(
+                "Snapshot releases must have -SNAPSHOT version number, doing nothing"
+              )
+              currentState
+            }
+          } else {
+            println("Tag push detected, publishing a stable release")
+            reloadKeyFiles ::
+              sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
+              sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+              sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
+              currentState
+          }
         }
       }
     }
@@ -178,6 +198,15 @@ object CiReleasePlugin extends AutoPlugin {
       publishLocalConfiguration.value.withOverwrite(true),
     publishTo := sonatypePublishToBundle.value
   )
+
+  def isDeploySetToSonatypeCentral(state: State): Boolean = {
+    sonatypeCredentialHost.in(ThisBuild).get(Project.extract(state).structure.data) match {
+      case Some(value) if value == Sonatype.sonatypeCentralHost => {
+        true
+      }
+      case _ => false
+    }
+  }
 
   def isSnapshotVersion(state: State): Boolean = {
     version.in(ThisBuild).get(Project.extract(state).structure.data) match {

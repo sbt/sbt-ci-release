@@ -361,6 +361,20 @@ Enjoy 👌
 
 ## FAQ
 
+### How do I publish to Sonatype Central?
+
+As of February 2024, Sonatype has released a new portal, called Sonatype Central. Users can configure their libraries to be published via this portal by adding the following to `build.sbt`:
+
+```sbt 
+import xerial.sbt.Sonatype.sonatypeCentralHost
+
+ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
+```
+
+Users can generate a two-part token, containing username and password values, in their [account](https://central.sonatype.com/account) and then set these to the _SONATYPE_USERNAME_ and _SONATYPE_PASSWORD_ environment variables. All other steps should then work as documented.
+
+
+
 ### How do I disable publishing in certain projects?
 
 Add the following to the project settings (works only in sbt 1)
