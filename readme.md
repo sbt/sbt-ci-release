@@ -220,18 +220,17 @@ settings page for your CI provider.
   ![github-env-vars-2021-01-27](https://user-images.githubusercontent.com/933058/111891688-ec344f80-89b1-11eb-9037-9899e5183ad9.png)
 
 - **Travis CI**:
-
-  Make sure that "Build pushed branches" setting is enabled.
+  - Make sure that "Build pushed branches" setting is enabled.
+  - If any secrets contain bash special characters, make sure to
+    escape them by wrapping it in single quotes `'my?$ecret'`,
+    see [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 
 Add the following secrets:
 
 - `PGP_PASSPHRASE`: The randomly generated password you used to create a fresh
-  gpg key. **For Travis Only:** If the password contains bash special
-  characters, make sure to escape it by wrapping it in single quotes
-  `'my?pa$$word'`, see
-  [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
+  gpg key.
 - `PGP_SECRET`: The base64 encoded secret of your private key that you can
-  export from the command line like here below
+  export from the command line like here below.
 
 ```
 # macOS
@@ -251,10 +250,7 @@ may include an additional % character at the end, to mark the end of content whi
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
   account was created before February 2021). Alternatively, the password part of
-  the user token if you generated one above. **For Travis Only:** If the
-  password contains bash special characters, make sure to escape it by wrapping
-  it in single quotes `'my?pa$$word'`, see
-  [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
+  the user token if you generated one above.
 - `SONATYPE_USERNAME`: The username you use to log into
   https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
   account was created before 2021). Alternatively, the name part of the user
