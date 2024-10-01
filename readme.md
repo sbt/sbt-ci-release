@@ -26,6 +26,7 @@ Let's get started!
   - [Travis](#travis)
 - [Git](#git)
 - [FAQ](#faq)
+  - [How do I publish to Sonatype Central?](#how-do-i-publish-to-sonatype-central)
   - [How do I disable publishing in certain projects?](#how-do-i-disable-publishing-in-certain-projects)
   - [How do I publish cross-built projects?](#how-do-i-publish-cross-built-projects)
   - [How do I publish cross-built Scala.js projects?](#how-do-i-publish-cross-built-scalajs-projects)
