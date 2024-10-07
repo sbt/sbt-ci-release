@@ -130,7 +130,7 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
-    publishArtifact.in(Test) := false,
+    (Test / publishArtifact) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
       val shouldDeployToSonatypeCentral = isDeploySetToSonatypeCentral(currentState)
@@ -200,7 +200,7 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   def isDeploySetToSonatypeCentral(state: State): Boolean = {
-    sonatypeCredentialHost.in(ThisBuild).get(Project.extract(state).structure.data) match {
+    (ThisBuild / sonatypeCredentialHost).get(Project.extract(state).structure.data) match {
       case Some(value) if value == Sonatype.sonatypeCentralHost => {
         true
       }
@@ -209,7 +209,7 @@ object CiReleasePlugin extends AutoPlugin {
   }
 
   def isSnapshotVersion(state: State): Boolean = {
-    version.in(ThisBuild).get(Project.extract(state).structure.data) match {
+    (ThisBuild / version).get(Project.extract(state).structure.data) match {
       case Some(v) => v.endsWith("-SNAPSHOT")
       case None    => throw new NoSuchFieldError("version")
     }
