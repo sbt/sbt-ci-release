@@ -16,25 +16,31 @@ inThisBuild(
         url("https://geirsson.com")
       )
     ),
-    crossScalaVersions := Seq(scala212)
   )
 )
 
 onLoadMessage := s"Welcome to sbt-ci-release ${version.value}"
-
+crossScalaVersions := Nil
 publish / skip := true // don't publish the root project
 
 lazy val plugin = project
   .enablePlugins(SbtPlugin)
   .settings(
     moduleName := "sbt-ci-release",
+    crossScalaVersions := Seq(scala212, scala3),
+    scalacOptions ++= {
+      scalaBinaryVersion.value match {
+        case "2.12" => "-Xsource:3" :: Nil
+        case _      => Nil
+      }
+    },
     (pluginCrossBuild / sbtVersion) := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.5.8"
         case _      => "2.0.0-M2"
       }
     },
-    addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.0.1"),
+    addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.0"),
     addSbtPlugin("com.github.sbt" % "sbt-git" % "2.1.0"),
     addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.0"),
     addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.12.2")

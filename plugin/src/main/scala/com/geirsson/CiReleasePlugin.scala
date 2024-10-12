@@ -4,24 +4,24 @@ import com.geirsson.PipeFail.PipeFailOps
 import com.github.sbt.git.GitPlugin
 import com.github.sbt.git.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
-import com.jsuereth.sbtpgp.SbtPgp.autoImport._
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.*
 
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 import sbt.Def
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.{ given, * }
 import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
-import sbtdynver.DynVerPlugin.autoImport._
+import sbtdynver.DynVerPlugin.autoImport.*
 
 import scala.deprecated
-import scala.sys.process._
+import scala.sys.process.{ given, * }
 import scala.util.control.NonFatal
 import xerial.sbt.Sonatype
-import xerial.sbt.Sonatype.autoImport._
+import xerial.sbt.Sonatype.autoImport.*
 
 object CiReleasePlugin extends AutoPlugin {
 
@@ -93,7 +93,9 @@ object CiReleasePlugin extends AutoPlugin {
       s"unzip gpg.zip".!
       s"gpg $importCommand gpg.key".!
     } else {
-      (s"echo $secret" #|! "base64 --decode" #|! s"gpg $importCommand").!
+      (Process(s"echo $secret") #|!
+        Process("base64 --decode") #|!
+        Process(s"gpg $importCommand")).!
     }
   }
 
