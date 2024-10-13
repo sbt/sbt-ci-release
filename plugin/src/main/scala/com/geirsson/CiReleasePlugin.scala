@@ -106,6 +106,8 @@ object CiReleasePlugin extends AutoPlugin {
       Some(s"scm:git:git@github.com:$user/$repo.git")
     )
 
+  lazy val cireleasePublishCommand = settingKey[String]("")
+
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
     dynverSonatypeSnapshots := true,
     scmInfo ~= {
@@ -128,7 +130,20 @@ object CiReleasePlugin extends AutoPlugin {
         } catch {
           case NonFatal(_) => None
         }
-    }
+    },
+    cireleasePublishCommand := {
+      val gitDescribe = dynverGitDescribeOutput.value
+      val v = gitDescribe.getVersion(
+        dynverCurrentDate.value,
+        dynverSeparator.value,
+        dynverSonatypeSnapshots.value
+      )
+      sys.env.get("CI_RELEASE") match {
+        case Some(cmd) => cmd
+        case None      => backPubVersionToCommand(v)
+      }
+    },
+    version ~= dropBackPubCommand,
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
@@ -136,7 +151,8 @@ object CiReleasePlugin extends AutoPlugin {
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
       val shouldDeployToSonatypeCentral = isDeploySetToSonatypeCentral(currentState)
-      val isSnapshot = isSnapshotVersion(currentState)
+      val version = getVersion(currentState)
+      val isSnapshot = isSnapshotVersion(version)
       if (!isSecure) {
         println("No access to secret variables, doing nothing")
         currentState
@@ -150,6 +166,8 @@ object CiReleasePlugin extends AutoPlugin {
         val reloadKeyFiles =
           "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
 
+        val publishCommand = getPublishCommand(currentState)
+
         if (shouldDeployToSonatypeCentral) {
           if (isSnapshot) {
             println(s"Sonatype Central does not accept snapshots, only official releases. Aborting release.")
@@ -161,7 +179,7 @@ object CiReleasePlugin extends AutoPlugin {
             println("Tag push detected, publishing a stable release")
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-              sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+              publishCommand ::
               sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeCentralRelease") ::
               currentState
           }
@@ -184,7 +202,7 @@ object CiReleasePlugin extends AutoPlugin {
             println("Tag push detected, publishing a stable release")
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-              sys.env.getOrElse("CI_RELEASE", "+publishSigned") ::
+              publishCommand ::
               sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
               currentState
           }
@@ -210,10 +228,49 @@ object CiReleasePlugin extends AutoPlugin {
     }
   }
 
-  def isSnapshotVersion(state: State): Boolean = {
+  def getVersion(state: State): String =
     (ThisBuild / version).get(Project.extract(state).structure.data) match {
-      case Some(v) => v.endsWith("-SNAPSHOT")
+      case Some(v) => v
       case None    => throw new NoSuchFieldError("version")
     }
+
+  def getPublishCommand(state: State): String =
+    (ThisBuild / cireleasePublishCommand).get(Project.extract(state).structure.data) match {
+      case Some(v) => v
+      case None    => throw new NoSuchFieldError("cireleasePublishCommand")
+    }
+
+  def isSnapshotVersion(v: String): Boolean = v.endsWith("-SNAPSHOT")
+
+  def backPubVersionToCommand(ver: String): String =
+    if (ver.contains("@")) {
+      val nonComment =
+        if (ver.contains("#")) ver.split("#").head
+        else ver
+      val commands0 = nonComment.split("@").toList.drop(1)
+      var nonDigit = false
+      val commands = (commands0.map { cmd =>
+        if (cmd.isEmpty) sys.error(s"Invalid back-publish version: $ver")
+        else {
+          if (!cmd.head.isDigit) {
+            nonDigit = true
+            cmd
+          }
+          else if (cmd.contains(".x")) s"++${cmd}"
+          else s"++${cmd}!"
+        }
+      }) ::: (if (nonDigit) Nil else List("publishSigned"))
+      commands match {
+        case x :: Nil => x
+        case xs       => xs.mkString(";", ";", "")
+      }
+    } else "+publishSigned"
+
+  def dropBackPubCommand(ver: String): String = {
+    val nonComment =
+      if (ver.contains("#")) ver.split("#").head
+      else ver
+    if (nonComment.contains("@")) nonComment.split("@").head
+    else nonComment
   }
 }
