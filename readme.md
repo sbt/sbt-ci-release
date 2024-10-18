@@ -247,7 +247,8 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
 
 *If you try to display the base64 encoded string in the terminal, some shells (like zsh or fish)
-may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.*
+may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.
+Note for Windows - delete any linebreaks or spaces when copying the encoded string from terminal.*
 - `SONATYPE_PASSWORD`: The password you use to log into
   https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
   account was created before February 2021). Alternatively, the password part of
