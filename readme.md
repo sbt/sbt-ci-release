@@ -357,6 +357,56 @@ page will look like this:
 
 Enjoy 👌
 
+### Back-publishing support
+
+sbt-ci-release implements a mini-DSL for the Git tag for back publishing purpose, which is useful if you maintain a compiler plugin, library for Scala Native, or an sbt plugin during 2.x migration etc.
+
+```
+v1.2.3[@3.x|@2.n.x|@a.b.c][@command][#comment]
+```
+
+- `#` is used for comments, which is useful if you need to use the same command multiple times
+- `@3.x` expands to `++3.x`, and if no other commands follow, `;++3.x;publishSigned`
+- `@2.13.x` expands to `++2.13.x`, and if no other commands follow, `;++2.13.x;publishSigned`
+- Other commands such as `@foo/publishSigned` expands to `foo/publishSigned`
+
+#### Case 1: Publish all subprojects for Scala 2.13.15
+
+`v1.2.3@2.13.15`
+
+#### Case 2: Publish all subprojects for Scala 3.x
+
+`v1.2.3@3.x`. Optionally we can add a comment: `v1.2.3@3.x#comment`.
+
+We can use this to back publish sbt 2.x plugins.
+
+1. Branch off of `v1.2.3` to create `release/1.2.3` branch, and send a PR to update sbt version
+2. Tag the brach to `v1.2.3@3.x#sbt2.0.0-Mn`
+
+#### Case 3: Publish some subprojects for Scala 2.13.15
+
+`v1.2.3@2.13.15@foo/publishSigned`
+
+You can create a subproject to aggregate 2 or more subprojects.
+
+#### Case 4: Publish some subprojects for supported Scala versions
+
+`v1.2.3@+foo_native/publishSigned#comment`
+
+1. Branch off of `v1.2.3` to create `release/1.2.3` branch, and send a PR to update the Scala Native version.
+2. Tag the branch to `v1.2.3@+foo_native/publishSigned#native0.5`
+
+#### Case 5: Minimize the use of command
+
+`v1.2.3#unique_comment`, for example `v1.2.3#native0.5_3`
+
+If you prefer to keep most of the information in a git branch instead, you can just use the comment functionality.
+
+1. Branch off of `v1.2.3` to create `release/1.2.3` branch, and send a PR to:
+   a. Update appropriate dependency (sbt, Scala Native etc)
+   b. Modify the `CI_RELEASE` environment variable to encode the actions you want to take, like `;++3.x;foo_native/publishSigned`. For GitHub Actions, it would be in `.github/workflows/release.yml`
+2. Tag the branch to `v1.2.3#unique_comment`. For record keeping, encode the version you're trying to back publishing for e.g. `v1.2.3#native0.5_3`
+
 ## FAQ
 
 ### How do I publish to Sonatype Central?
