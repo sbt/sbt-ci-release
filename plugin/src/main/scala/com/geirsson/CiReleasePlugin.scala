@@ -12,13 +12,13 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 import sbt.Def
 import sbt.Keys.*
-import sbt.{ given, * }
+import sbt.{given, *}
 import sbt.plugins.JvmPlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport.*
 
 import scala.deprecated
-import scala.sys.process.{ given, * }
+import scala.sys.process.{given, *}
 import scala.util.control.NonFatal
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport.*
@@ -143,14 +143,15 @@ object CiReleasePlugin extends AutoPlugin {
         case None      => backPubVersionToCommand(v)
       }
     },
-    version ~= dropBackPubCommand,
+    version ~= dropBackPubCommand
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
     (Test / publishArtifact) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
-      val shouldDeployToSonatypeCentral = isDeploySetToSonatypeCentral(currentState)
+      val shouldDeployToSonatypeCentral =
+        isDeploySetToSonatypeCentral(currentState)
       val version = getVersion(currentState)
       val isSnapshot = isSnapshotVersion(version)
       if (!isSecure) {
@@ -170,17 +171,22 @@ object CiReleasePlugin extends AutoPlugin {
 
         if (shouldDeployToSonatypeCentral) {
           if (isSnapshot) {
-            println(s"Sonatype Central does not accept snapshots, only official releases. Aborting release.")
+            println(
+              s"Sonatype Central does not accept snapshots, only official releases. Aborting release."
+            )
             currentState
           } else if (!isTag) {
-            println(s"No tag published. Cannot publish an official release without a tag and Sonatype Central does not accept snapshot releases. Aborting release.")
+            println(
+              s"No tag published. Cannot publish an official release without a tag and Sonatype Central does not accept snapshot releases. Aborting release."
+            )
             currentState
           } else {
             println("Tag push detected, publishing a stable release")
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
               publishCommand ::
-              sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeCentralRelease") ::
+              sys.env
+                .getOrElse("CI_SONATYPE_RELEASE", "sonatypeCentralRelease") ::
               currentState
           }
         } else {
@@ -203,7 +209,8 @@ object CiReleasePlugin extends AutoPlugin {
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
               publishCommand ::
-              sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
+              sys.env
+                .getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
               currentState
           }
         }
@@ -220,7 +227,9 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   def isDeploySetToSonatypeCentral(state: State): Boolean = {
-    (ThisBuild / sonatypeCredentialHost).get(Project.extract(state).structure.data) match {
+    (ThisBuild / sonatypeCredentialHost).get(
+      Project.extract(state).structure.data
+    ) match {
       case Some(value) if value == Sonatype.sonatypeCentralHost => {
         true
       }
@@ -235,7 +244,9 @@ object CiReleasePlugin extends AutoPlugin {
     }
 
   def getPublishCommand(state: State): String =
-    (ThisBuild / cireleasePublishCommand).get(Project.extract(state).structure.data) match {
+    (ThisBuild / cireleasePublishCommand).get(
+      Project.extract(state).structure.data
+    ) match {
       case Some(v) => v
       case None    => throw new NoSuchFieldError("cireleasePublishCommand")
     }
@@ -255,8 +266,7 @@ object CiReleasePlugin extends AutoPlugin {
           if (!cmd.head.isDigit) {
             nonDigit = true
             cmd
-          }
-          else if (cmd.contains(".x")) s"++${cmd}"
+          } else if (cmd.contains(".x")) s"++${cmd}"
           else s"++${cmd}!"
         }
       }) ::: (if (nonDigit) Nil else List("publishSigned"))
