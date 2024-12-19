@@ -142,8 +142,7 @@ object CiReleasePlugin extends AutoPlugin {
         case Some(cmd) => cmd
         case None      => backPubVersionToCommand(v)
       }
-    },
-    version ~= dropBackPubCommand
+    }
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
@@ -219,6 +218,7 @@ object CiReleasePlugin extends AutoPlugin {
   )
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = List(
+    version ~= dropBackPubCommand,
     publishConfiguration :=
       publishConfiguration.value.withOverwrite(true),
     publishLocalConfiguration :=
