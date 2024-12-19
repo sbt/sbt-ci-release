@@ -63,10 +63,9 @@ Hi, I would like to publish under the groupId: io.github.sbt.
 It's my GitHub account https://github.com/sbt/
 ```
 
-### Optional: create user tokens
-
-If you prefer not to save your actual username and password in GitHub Actions
-settings below, generate your user tokens:
+Sonatype no longer allows using your actual username and password to
+authenticate during publishing. Instead, you must use the name and password
+from your "user token".
 
 - login to https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your
   Sonatype account was created before February 2021),
@@ -246,14 +245,10 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 *If you try to display the base64 encoded string in the terminal, some shells (like zsh or fish)
 may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.
 Note for Windows - delete any linebreaks or spaces when copying the encoded string from terminal.*
-- `SONATYPE_PASSWORD`: The password you use to log into
-  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
-  account was created before February 2021). Alternatively, the password part of
-  the user token if you generated one above.
-- `SONATYPE_USERNAME`: The username you use to log into
-  https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
-  account was created before 2021). Alternatively, the name part of the user
-  token if you generated one above.
+- `SONATYPE_PASSWORD`: The password part of your Sonatype
+  user token (not the account password!).
+- `SONATYPE_USERNAME`: The username part of your Sonatype
+  user token (not the account username!).
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
   releases. Defaults to `+publishSigned` if not provided.
 - (optional) `CI_SNAPSHOT_RELEASE`: the command to publish all artifacts for a
@@ -410,15 +405,11 @@ If you prefer to keep most of the information in a git branch instead, you can j
 
 As of February 2024, Sonatype has released a new portal, called Sonatype Central. Users can configure their libraries to be published via this portal by adding the following to `build.sbt`:
 
-```sbt 
+```sbt
 import xerial.sbt.Sonatype.sonatypeCentralHost
 
 ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 ```
-
-Users can generate a two-part token, containing username and password values, in their [account](https://central.sonatype.com/account) and then set these to the _SONATYPE_USERNAME_ and _SONATYPE_PASSWORD_ environment variables. All other steps should then work as documented.
-
-
 
 ### How do I disable publishing in certain projects?
 
