@@ -3,7 +3,7 @@
 ![CI](https://github.com/sbt/sbt-ci-release/workflows/CI/badge.svg)
 
 This is an sbt plugin to help automate releases to Sonatype and Maven Central
-from GitHub Actions.
+from CI environments such as GitHub Actions.
 
 - git tag pushes are published as regular releases to Maven Central
 - merge into main commits are published as -SNAPSHOT with a unique version
@@ -22,8 +22,6 @@ Let's get started!
 - [sbt](#sbt)
 - [GPG](#gpg)
 - [Secrets](#secrets)
-  - [GitHub Actions](#github-actions)
-  - [Travis](#travis)
 - [Git](#git)
 - [FAQ](#faq)
   - [How do I publish to Sonatype Central?](#how-do-i-publish-to-sonatype-central)
@@ -32,7 +30,7 @@ Let's get started!
   - [How do I publish cross-built Scala.js projects?](#how-do-i-publish-cross-built-scalajs-projects)
   - [Can I depend on Maven Central releases immediately?](#can-i-depend-on-maven-central-releases-immediately)
   - [How do I depend on the SNAPSHOT releases?](#how-do-i-depend-on-the-snapshot-releases)
-  - [What about other CIs environments than Travis?](#what-about-other-cis-environments-than-travis)
+  - [What about other CI environments?](#what-about-other-ci-environments)
   - [Does sbt-ci-release work for sbt 0.13?](#does-sbt-ci-release-work-for-sbt-013)
   - [How do I publish sbt plugins?](#how-do-i-publish-sbt-plugins)
   - [java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff](#javaioioexception-secret-key-ring-doesnt-start-with-secret-key-tag-tag-0xffffffff)
@@ -144,7 +142,7 @@ gpg --gen-key
   "sbt-ci-release bot".
 - For email, use your own email address
 - For passphrase, generate a random password with a password manager. This will be the
-  environment variables PGP_PASSPHRASE in your CI. Take note of `PGP_PASSPHRASE`.
+  environment variables `PGP_PASSPHRASE` in your CI config. Take note of `PGP_PASSPHRASE`.
 
 At the end you'll see output like this
 
@@ -203,25 +201,16 @@ gpg --keyserver hkp://keyserver.ubuntu.com --send-key %LONG_ID% && \
 
 ## Secrets
 
-Next, you'll need to declare four environment variables in your CI. Open the
-settings page for your CI provider.
+Next, you'll need to declare four environment variables in your CI.
 
-- **GitHub Actions**:
-
-  Select `Settings -> Secrets and variables -> Actions -> New repository secret` to add each of the
-  required variables as shown in the next figure:
+Select `Settings -> Secrets and variables -> Actions -> New repository secret` to add each of the
+required variables as shown in the next figure:
 
   ![github-secrets-2021-01-27](https://user-images.githubusercontent.com/933058/111891685-e0e12400-89b1-11eb-929c-24f5b48b24de.png)
 
-  When complete, your secrets settings should look like the following:
+When complete, your secrets settings should look like the following:
 
   ![github-env-vars-2021-01-27](https://user-images.githubusercontent.com/933058/111891688-ec344f80-89b1-11eb-9037-9899e5183ad9.png)
-
-- **Travis CI**:
-  - Make sure that "Build pushed branches" setting is enabled.
-  - If any secrets contain bash special characters, make sure to
-    escape them by wrapping it in single quotes `'my?$ecret'`,
-    see [Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 
 Add the following secrets:
 
@@ -263,8 +252,6 @@ Note for Windows - delete any linebreaks or spaces when copying the encoded stri
   projects to change to `sonatypeReleaseAll`. Defaults to
   `sonatypeBundleRelease` if not provided.
 
-### GitHub Actions
-
 Run the following command to install the same
 [`release.yml`](https://github.com/sbt/sbt-ci-release/blob/main/.github/workflows/release.yml)
 script that is used to release this repository.
@@ -275,61 +262,6 @@ mkdir -p .github/workflows && \
 ```
 
 Commit the file and merge into main.
-
-### Travis
-
-> Skip this step if you're using GitHub Actions. > Unless you have a specific
-> reason to use Travis, we recommend using GitHub Actions because > it's easier
-> to configure.
-
-Next, update `.travis.yml` to trigger `ci-release` on successful merge into
-master and on tag push. There are many ways to do this, but I recommend using
-[Travis "build stages"](https://docs.travis-ci.com/user/build-stages/). It's not
-necessary to use build stages but they make it easy to avoid publishing the same
-module multiple times from parallel jobs.
-
-- First, ensure that git tags are always fetched so that sbt-dynver can pick up
-  the correct `version`
-
-```yml
-before_install:
-  - git fetch --tags
-```
-
-- Next, define `test` and `release` build stages
-
-```yml
-stages:
-  - name: test
-  - name: release
-    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
-```
-
-- Lastly, define your build matrix with `ci-release` at the bottom, for example:
-
-```yml
-jobs:
-  include:
-    # stage="test" if no stage is specified
-    - name: compile
-      script: sbt compile
-    - name: formatting
-      script: ./bin/scalafmt --test
-    # run ci-release only if previous stages passed
-    - stage: release
-      script: sbt ci-release
-```
-
-Notes:
-
-- if we use `after_success` instead of build stages, we would run `ci-release`
-  after both `formatting` and `compile`. As long as you make sure you don't
-  publish the same module multiple times, you can use any Travis configuration
-  you like
-- the `name: compile` part is optional but it makes it easy to distinguish
-  different jobs in the Travis UI
-
-![build__48_-_sbt-ci-release_-_travis_ci](https://user-images.githubusercontent.com/1408093/41810442-a44ef526-76fe-11e8-92f4-4c4b61af4d38.jpg)
 
 ## Git
 
@@ -347,10 +279,7 @@ Note that the tag version MUST start with `v`.
 
 It is normal that something fails on the first attempt to publish from CI. Even
 if it takes 10 attempts to get it right, it's still worth it because it's so
-nice to have automatic CI releases. If all is correctly setup, your Travis jobs
-page will look like this:
-
-<img width="1058" alt="screen shot 2018-06-23 at 15 48 43" src="https://user-images.githubusercontent.com/1408093/41810386-b8c11198-76fd-11e8-8be1-54b84181e60d.png">
+nice to have automatic CI releases.
 
 Enjoy 👌
 
@@ -464,8 +393,6 @@ Next, add an additional `ci-release` step in your CI config to publish the
 custom Scala.js version
 
 ```diff
-// .travis.yml
-  sbt ci-release
 + SCALAJS_VERSION=0.6.31 sbt ci-release
 ```
 
@@ -520,13 +447,14 @@ coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snaps
 
 Use `-r https://s01.oss.sonatype.org/content/repositories/snapshots` instead if your Sonatype account was created after February 2021.
 
-### What about other CIs environments than Travis?
+### What about other CI environments?
 
-- This project uses a github workflow,
-  [which you can review here](https://github.com/sbt/sbt-ci-release/tree/master/.github/workflows)
-- [CircleCI](https://circleci.com/) is supported
+If you are still using Travis-CI, see old revisions of this readme
+for instructions.
 
-You can try
+[CircleCI](https://circleci.com/) should work as well.
+
+You could also try
 [sbt-release-early](https://github.com/scalacenter/sbt-release-early).
 
 Alternatively, the source code for sbt-ci-release is only ~50 loc, see
@@ -559,12 +487,6 @@ This error happens when you publish a non-SNAPSHOT version to the snapshot
 repository. If you pushed a tag, make sure the tag version number starts with
 `v`. This error can happen if you tag with the version `0.1.0` instead of
 `v0.1.0`.
-
-### java.io.IOException: Access to URL was refused by the server: Unauthorized
-
-Make sure that `SONATYPE_PASSWORD` uses proper escaping if it contains special
-characters as documented on
-[Travis Environment Variables](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 
 ### Failed: signature-staging, failureMessage:Missing Signature:
 
@@ -638,8 +560,7 @@ setup.
 - [sbt-ci-release-early](https://github.com/ShiftLeftSecurity/sbt-ci-release-early):
   very similar to sbt-ci-release except doesn't use SNAPSHOT versions.
 - [sbt-release-early](https://github.com/scalacenter/sbt-release-early):
-  additionally supports publishing to Bintray and other CI environments than
-  Travis.
+  additionally supports other publishing providers and other CI environments.
 - [sbt-rig](https://github.com/Verizon/sbt-rig): additionally supporting
   publishing code coverage reports, managing test dependencies and publishing
   docs.
