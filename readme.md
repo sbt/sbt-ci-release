@@ -246,7 +246,7 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.
 Note for Windows - delete any linebreaks or spaces when copying the encoded string from terminal.*
 - `SONATYPE_PASSWORD`: The password part of your Sonatype
-  user token (not the account password!).
+  [OSSRH token](https://central.sonatype.org/publish/generate-token/), generated on your Nexus server https://s01.oss.sonatype.org/ or https://oss.sonatype.org/ (not the account password!).
 - `SONATYPE_USERNAME`: The username part of your Sonatype
   user token (not the account username!).
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
