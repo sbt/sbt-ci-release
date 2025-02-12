@@ -509,10 +509,8 @@ project?
 [Add it in a PR!](https://github.com/sbt/sbt-ci-release/edit/main/readme.md)
 
 - [AlexITC/scala-js-chrome](https://github.com/AlexITC/scala-js-chrome)
-- [almond-sh/almond](https://github.com/almond-sh/almond/)
 - [an-tex/sc8s](https://github.com/an-tex/sc8s)
 - [bitcoin-s/bitcoin-s](https://github.com/bitcoin-s/bitcoin-s)
-- [coursier/coursier](https://github.com/coursier/coursier/)
 - [ekrich/sconfig](https://github.com/ekrich/sconfig/)
 - [fd4s/fs2-kafka](https://github.com/fd4s/fs2-kafka)
 - [fd4s/vulcan](https://github.com/fd4s/vulcan)
