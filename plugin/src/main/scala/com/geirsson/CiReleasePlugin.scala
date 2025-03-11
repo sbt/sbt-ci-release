@@ -143,7 +143,19 @@ object CiReleasePlugin extends AutoPlugin {
         case None      => backPubVersionToCommand(v)
       }
     },
-    version ~= dropBackPubCommand
+    version := {
+      val v = version.value
+      dynverGitDescribeOutput.value match {
+        case Some(gitDescribe) =>
+          val tagVersion = gitDescribe.ref.dropPrefix
+          if (gitDescribe.isCleanAfterTag) {
+            dropBackPubCommand(v)
+          } else if (v.startsWith(tagVersion)) {
+            dropBackPubCommand(tagVersion) + v.drop(tagVersion.size)
+          } else v
+        case _ => v
+      }
+    }
   )
 
   override lazy val globalSettings: Seq[Def.Setting[_]] = List(
