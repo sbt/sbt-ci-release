@@ -178,10 +178,21 @@ object CiReleasePlugin extends AutoPlugin {
         val publishCommand = getPublishCommand(currentState)
 
         if (!isTag) {
-          println(
-            s"No tag published. Cannot publish an official release without a tag and Sonatype Central does not accept snapshot releases. Aborting release."
-          )
-          currentState
+          if (isSnapshot) {
+            println(s"No tag push, publishing SNAPSHOT")
+            reloadKeyFiles ::
+              sys.env.getOrElse("CI_CLEAN", "; clean") ::
+              publishCommand ::
+              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "sonaRelease") ::
+              currentState
+          } else {
+            // Happens when a tag is pushed right after merge causing the main branch
+            // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
+            println(
+              "Snapshot releases must have -SNAPSHOT version number, doing nothing"
+            )
+            currentState
+          }
         } else {
           println("Tag push detected, publishing a stable release")
           reloadKeyFiles ::
