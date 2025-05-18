@@ -84,6 +84,11 @@ Next, install this plugin in `project/plugins.sbt`
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "<version>")
 ```
 
+|                 | Central Portal            | Legacy OSSRH                                                                   |
+|-----------------|---------------------------|--------------------------------------------------------------------------------|
+| sbt 1.11.0-RC1+ | sbt-ci-release 1.11.0-RC1 | sbt-ci-release 1.11.0-RC1<br>Set `CI_SONATYPE_RELEASE` to `sonatypeBundleRelease` |
+| sbt 1.10.x      | sbt-ci-release 1.9.3      | sbt-ci-release 1.9.3                                                           |
+
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
 
 - [sbt-dynver](https://github.com/dwijnand/sbt-dynver): sets the version number
