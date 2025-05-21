@@ -183,7 +183,7 @@ object CiReleasePlugin extends AutoPlugin {
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean") ::
               publishCommand ::
-              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "sonaRelease") ::
+              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "version") ::
               currentState
           } else {
             // Happens when a tag is pushed right after merge causing the main branch
@@ -219,9 +219,13 @@ object CiReleasePlugin extends AutoPlugin {
     publishTo := {
       val orig = (ThisBuild / publishTo).value
       (orig, localStaging.?.value) match {
-        case (Some(r), _)          => orig
-        case (None, Some(staging)) => staging
-        case _                     => orig
+        case (Some(r), _) => orig
+        case (None, None) => orig
+        case (None, Some(staging)) =>
+          val centralSnapshots =
+            "https://central.sonatype.com/repository/maven-snapshots/"
+          if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+          else staging
       }
     }
   )
