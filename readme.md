@@ -24,7 +24,6 @@ Let's get started!
 - [Secrets](#secrets)
 - [Git](#git)
 - [FAQ](#faq)
-  - [How do I publish to Sonatype Central?](#how-do-i-publish-to-sonatype-central)
   - [How do I disable publishing in certain projects?](#how-do-i-disable-publishing-in-certain-projects)
   - [How do I publish cross-built projects?](#how-do-i-publish-cross-built-projects)
   - [How do I publish cross-built Scala.js projects?](#how-do-i-publish-cross-built-scalajs-projects)
@@ -334,16 +333,6 @@ If you prefer to keep most of the information in a git branch instead, you can j
 2. Tag the branch to `v1.2.3#unique_comment`. For record keeping, encode the version you're trying to back publishing for e.g. `v1.2.3#native0.5_3`
 
 ## FAQ
-
-### How do I publish to Sonatype Central?
-
-As of February 2024, Sonatype has released a new portal, called Sonatype Central. Users can configure their libraries to be published via this portal by adding the following to `build.sbt`:
-
-```sbt
-import xerial.sbt.Sonatype.sonatypeCentralHost
-
-ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
-```
 
 ### How do I disable publishing in certain projects?
 
