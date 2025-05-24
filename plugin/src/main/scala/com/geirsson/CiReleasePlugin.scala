@@ -106,8 +106,17 @@ object CiReleasePlugin extends AutoPlugin {
 
   lazy val cireleasePublishCommand = settingKey[String]("")
 
+  // copied from sbt Keys.scala
+  private val localStaging = settingKey[Option[Resolver]](
+    "Local staging resolver for Sonatype publishing"
+  )
+  private val sbtPluginPublishLegacyMavenStyle = settingKey[Boolean](
+    "Configuration for generating the legacy pom of sbt plugins, to publish to Maven"
+  )
   override lazy val buildSettings: Seq[Def.Setting[_]] = List(
     dynverSonatypeSnapshots := true,
+    // Central Portal no longer supports the legacy style
+    sbtPluginPublishLegacyMavenStyle := false,
     scmInfo ~= {
       case Some(info) => Some(info)
       case None =>
@@ -197,17 +206,13 @@ object CiReleasePlugin extends AutoPlugin {
           println("Tag push detected, publishing a stable release")
           reloadKeyFiles ::
             sys.env.getOrElse("CI_CLEAN", "; clean") ::
-            publishCommand ::
+            // workaround for *.asc.sha1 not being allowed
+            "publish" ::
             sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonaRelease") ::
             currentState
         }
       }
     }
-  )
-
-  // copied from sbt Keys.scala
-  private val localStaging = settingKey[Option[Resolver]](
-    "Local staging resolver for Sonatype publishing"
   )
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = List(
