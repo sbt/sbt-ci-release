@@ -191,7 +191,8 @@ object CiReleasePlugin extends AutoPlugin {
             println(s"No tag push, publishing SNAPSHOT")
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean") ::
-              publishCommand ::
+              // workaround for *.asc.sha1 not being allowed
+              "publish" ::
               sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "version") ::
               currentState
           } else {
@@ -206,8 +207,7 @@ object CiReleasePlugin extends AutoPlugin {
           println("Tag push detected, publishing a stable release")
           reloadKeyFiles ::
             sys.env.getOrElse("CI_CLEAN", "; clean") ::
-            // workaround for *.asc.sha1 not being allowed
-            "publish" ::
+            publishCommand ::
             sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonaRelease") ::
             currentState
         }
