@@ -2,8 +2,8 @@
 
 ![CI](https://github.com/sbt/sbt-ci-release/workflows/CI/badge.svg)
 
-This is an sbt plugin to help automate releases to Sonatype and Maven Central
-from CI environments such as GitHub Actions.
+sbt-ci-release is an sbt plugin to help automate releases to Sonatype and
+the Central Repository (aka Maven Central) from CI environments such as GitHub Actions.
 
 - git tag pushes are published as regular releases to Maven Central
 - merge into main commits are published as -SNAPSHOT with a unique version
@@ -12,6 +12,16 @@ from CI environments such as GitHub Actions.
 Beware that publishing from GitHub Actions requires you to expose Sonatype
 credentials as secret environment variables in GitHub Actions jobs. However,
 secret environment variables are not accessible during pull requests.
+
+**Note**: Sonatype has announced to [sunset](https://central.sonatype.org/news/20250326_ossrh_sunset/)
+the Legacy OSSRH endpoint to publish to the Central Repository on 2025-06-30.
+As of May, we recommend using sbt-ci-release 1.11.0 or later after you migrate to
+the Central Portal publishing, and use sbt-ci-release 1.9.3 for the Legacy OSSRH.
+
+|            | Central Portal         | Legacy OSSRH (Sunset on 2025-06-30)  |
+|------------|------------------------|--------------------------------------|
+| sbt 1.11.x | sbt-ci-release 1.11.0+ | ⚠️                                   |
+| sbt 1.10.x | ⚠️                     | sbt-ci-release 1.9.3                 |
 
 Let's get started!
 
@@ -83,10 +93,10 @@ Next, install this plugin in `project/plugins.sbt`
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "<version>")
 ```
 
-|                 | Central Portal            | Legacy OSSRH                                                                   |
-|-----------------|---------------------------|--------------------------------------------------------------------------------|
-| sbt 1.11.0-RC1+ | sbt-ci-release 1.11.0-RC1 | sbt-ci-release 1.11.0-RC1<br>Set `CI_SONATYPE_RELEASE` to `sonatypeBundleRelease` |
-| sbt 1.10.x      | sbt-ci-release 1.9.3      | sbt-ci-release 1.9.3                                                           |
+|            | Central Portal         | Legacy OSSRH (Sunset on 2025-06-30)  |
+|------------|------------------------|--------------------------------------|
+| sbt 1.11.x | sbt-ci-release 1.11.0+ | ⚠️                                   |
+| sbt 1.10.x | ⚠️                     | sbt-ci-release 1.9.3                 |
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
 
