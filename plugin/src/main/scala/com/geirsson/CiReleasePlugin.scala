@@ -119,7 +119,7 @@ object CiReleasePlugin extends AutoPlugin {
     sbtPluginPublishLegacyMavenStyle := false,
     scmInfo ~= {
       case Some(info) => Some(info)
-      case None =>
+      case None       =>
         import scala.sys.process._
         val identifier = """([^\/]+?)"""
         val GitHubHttps =
@@ -224,8 +224,8 @@ object CiReleasePlugin extends AutoPlugin {
     publishTo := {
       val orig = (ThisBuild / publishTo).value
       (orig, localStaging.?.value) match {
-        case (Some(r), _) => orig
-        case (None, None) => orig
+        case (Some(r), _)          => orig
+        case (None, None)          => orig
         case (None, Some(staging)) =>
           val centralSnapshots =
             "https://central.sonatype.com/repository/maven-snapshots/"
