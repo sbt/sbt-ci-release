@@ -192,8 +192,7 @@ object CiReleasePlugin extends AutoPlugin {
             reloadKeyFiles ::
               sys.env.getOrElse("CI_CLEAN", "; clean") ::
               // workaround for *.asc.sha1 not being allowed
-              "publish" ::
-              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "version") ::
+              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
               currentState
           } else {
             // Happens when a tag is pushed right after merge causing the main branch
