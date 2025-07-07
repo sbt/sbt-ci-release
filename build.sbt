@@ -37,7 +37,7 @@ lazy val plugin = project
     (pluginCrossBuild / sbtVersion) := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.5.8"
-        case _      => "2.0.0-M2"
+        case _      => "2.0.0-M4"
       }
     },
     libraryDependencies += "org.scalameta" %% "munit" % "1.0.3" % Test,
