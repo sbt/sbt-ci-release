@@ -203,13 +203,13 @@ or run:
 ```bash
 # macOS
 gpg --keyserver hkp://keyserver.ubuntu.com --send-key $LONG_ID && \
- gpg --keyserver hkp://pgp.mit.edu --send-key $LONG_ID
+ gpg --keyserver hkp://keys.openpgp.org --send-key $LONG_ID
 # linux
 gpg --keyserver hkp://keyserver.ubuntu.com --send-key $LONG_ID && \
- gpg --keyserver hkp://pgp.mit.edu --send-key $LONG_ID
+ gpg --keyserver hkp://keys.openpgp.org --send-key $LONG_ID
 # Windows
 gpg --keyserver hkp://keyserver.ubuntu.com --send-key %LONG_ID% && \
- gpg --keyserver hkp://pgp.mit.edu --send-key %LONG_ID%
+ gpg --keyserver hkp://keys.openpgp.org --send-key %LONG_ID%
 ```
 
 ## Secrets
