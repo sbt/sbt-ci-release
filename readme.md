@@ -13,15 +13,9 @@ Beware that publishing from GitHub Actions requires you to expose Sonatype
 credentials as secret environment variables in GitHub Actions jobs. However,
 secret environment variables are not accessible during pull requests.
 
-**Note**: Sonatype has announced to [sunset](https://central.sonatype.org/news/20250326_ossrh_sunset/)
-the Legacy OSSRH endpoint to publish to the Central Repository on 2025-06-30.
-As of May, we recommend using sbt-ci-release 1.11.0 or later after you migrate to
-the Central Portal publishing, and use sbt-ci-release 1.9.3 for the Legacy OSSRH.
-
-|            | Central Portal         | Legacy OSSRH (Sunset on 2025-06-30)  |
-|------------|------------------------|--------------------------------------|
-| sbt 1.11.x | sbt-ci-release 1.11.0+ | ⚠️                                   |
-| sbt 1.10.x | ⚠️                     | sbt-ci-release 1.9.3                 |
+**Note**: Sonatype has [sunset the Legacy OSSRH endpoint to publish](https://central.sonatype.org/news/20250326_ossrh_sunset/) on 2025-06-30.
+To publish to the Central Repository, please migrateo using sbt 1.11.x or later
+and sbt-ci-release 1.11.0 or later after you migrate to publish to the Central Portal publishing.
 
 Let's get started!
 
@@ -37,7 +31,6 @@ Let's get started!
   - [How do I disable publishing in certain projects?](#how-do-i-disable-publishing-in-certain-projects)
   - [How do I publish cross-built projects?](#how-do-i-publish-cross-built-projects)
   - [How do I publish cross-built Scala.js projects?](#how-do-i-publish-cross-built-scalajs-projects)
-  - [Can I depend on Maven Central releases immediately?](#can-i-depend-on-maven-central-releases-immediately)
   - [How do I depend on the SNAPSHOT releases?](#how-do-i-depend-on-the-snapshot-releases)
   - [What about other CI environments?](#what-about-other-ci-environments)
   - [Does sbt-ci-release work for sbt 0.13?](#does-sbt-ci-release-work-for-sbt-013)
@@ -74,13 +67,9 @@ Sonatype no longer allows using your actual username and password to
 authenticate during publishing. Instead, you must use the name and password
 from your "user token".
 
-- login to https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your
-  Sonatype account was created before February 2021),
-- click your username in the top right, then profiles,
-- in the tab that was opened, click on the top left dropdown, and select "User
-  Token",
-- click "Access User Token", and save the name and password parts of the token
-  somewhere safe.
+- login to <https://central.sonatype.com/>
+- click your username in the top right, then View Account,
+- click on "Generate User Token", and "Ok"
 
 ## sbt
 
@@ -93,19 +82,12 @@ Next, install this plugin in `project/plugins.sbt`
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "<version>")
 ```
 
-|            | Central Portal         | Legacy OSSRH (Sunset on 2025-06-30)  |
-|------------|------------------------|--------------------------------------|
-| sbt 1.11.x | sbt-ci-release 1.11.0+ | ⚠️                                   |
-| sbt 1.10.x | ⚠️                     | sbt-ci-release 1.9.3                 |
-
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
 
 - [sbt-dynver](https://github.com/dwijnand/sbt-dynver): sets the version number
   based on your git history
 - [sbt-pgp](https://github.com/sbt/sbt-pgp): to cryptographically sign the
   artifacts before publishing
-- [sbt-sonatype](https://github.com/xerial/sbt-sonatype): to publish artifacts
-  to Sonatype
 - [sbt-git](https://github.com/sbt/sbt-git): to automatically populate `scmInfo`
 
 Make sure `build.sbt` does not define any of the following settings
@@ -132,14 +114,6 @@ inThisBuild(List(
     )
   )
 ))
-```
-
-If your sonatype account is new (created after Feb 2021), then the default server
-location inherited from the the `sbt-sonatype` plugin will not work, and you should
-also include the following overrides in your publishing settings
-```scala
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
-sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 ```
 
 ## GPG
@@ -249,7 +223,7 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.
 Note for Windows - delete any linebreaks or spaces when copying the encoded string from terminal.*
 - `SONATYPE_PASSWORD`: The password part of your Sonatype
-  [OSSRH token](https://central.sonatype.org/publish/generate-token/), generated on your Nexus server https://s01.oss.sonatype.org/ or https://oss.sonatype.org/ (not the account password!).
+  [OSSRH token](https://central.sonatype.com/account), generated on the Central Portal (not the account password!).
 - `SONATYPE_USERNAME`: The username part of your Sonatype
   user token (not the account username!).
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
@@ -391,56 +365,13 @@ custom Scala.js version
 + SCALAJS_VERSION=0.6.31 sbt ci-release
 ```
 
-### Can I depend on Maven Central releases immediately?
-
-Yes! As soon as CI "closes" the staging repository you can depend on those
-artifacts with
-
-```scala
-resolvers ++= Resolver.sonatypeOssRepos("staging")
-```
-
-Use this instead if your Sonatype account was created after February 2021
-
-```scala
-resolvers +=
-  "Sonatype OSS Releases" at "https://s01.oss.sonatype.org/content/repositories/releases"
-```
-
-(optional) Use the
-[coursier](https://github.com/coursier/coursier/#command-line) command line
-interface to check if a release was successful without opening sbt
-
-```bash
-coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0 -r sonatype:public
-```
-
-Use `-r https://s01.oss.sonatype.org/content/repositories/releases` instead if your Sonatype account was created after February 2021.
-
 ### How do I depend on the SNAPSHOT releases?
 
 Add the following setting
 
 ```scala
-resolvers ++= Opts.resolver.sonatypeOssSnapshots
+resolvers += Resolver.sonatypeCentralSnapshots
 ```
-
-or
-
-```scala
-resolvers +=
-  "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots"
-```
-
-if your Sonatype account was created after February 2021.
-
-(optional) With coursier you can do the same thing with `-r sonatype:snapshots`
-
-```bash
-coursier fetch com.github.sbt:scalafmt-cli_2.12:1.5.0-SNAPSHOT -r sonatype:snapshots
-```
-
-Use `-r https://s01.oss.sonatype.org/content/repositories/snapshots` instead if your Sonatype account was created after February 2021.
 
 ### What about other CI environments?
 
@@ -476,22 +407,12 @@ setup required. It is not necessary to publish sbt plugins to Bintray.
   wrapped). If you use the GNU coreutils `base64` (default on Ubuntu), pass in
   the `-w0` flag to disable line wrapping.
 
-### java.io.IOException: PUT operation to URL https://s01.oss.sonatype.org/content/repositories/snapshots 400: Bad Request
+### java.io.IOException: Server returned HTTP response code: 400 for URL: https://central.sonatype.com/repository/maven-snapshots
 
 This error happens when you publish a non-SNAPSHOT version to the snapshot
 repository. If you pushed a tag, make sure the tag version number starts with
 `v`. This error can happen if you tag with the version `0.1.0` instead of
 `v0.1.0`.
-
-### Failed: signature-staging, failureMessage:Missing Signature:
-
-Make sure to upgrade to the latest sbt-ci-release, which could fix this error.
-This failure can happen in case you push a git tag immediately after merging a
-branch into master. A manual workaround is to log into
-https://s01.oss.sonatype.org/ (or https://oss.sonatype.org/ if your Sonatype
-account was created before February 2021) and drop the failing repository from
-the web UI. Alternatively, you can run `sonatypeDrop <staging-repo-id>` from the
-sbt shell instead of using the web UI.
 
 ### How do I create release notes? Can they be automatically generated?
 
