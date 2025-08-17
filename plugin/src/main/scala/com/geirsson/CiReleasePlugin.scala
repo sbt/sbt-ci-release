@@ -114,14 +114,14 @@ object CiReleasePlugin extends AutoPlugin {
   private val sbtPluginPublishLegacyMavenStyle = settingKey[Boolean](
     "Configuration for generating the legacy pom of sbt plugins, to publish to Maven"
   )
-  override lazy val buildSettings: Seq[Def.Setting[_]] = List(
+  override lazy val buildSettings: Seq[Def.Setting[?]] = List(
     dynverSonatypeSnapshots := true,
     // Central Portal no longer supports the legacy style
     sbtPluginPublishLegacyMavenStyle := false,
     scmInfo ~= {
       case Some(info) => Some(info)
       case None       =>
-        import scala.sys.process._
+        import scala.sys.process.*
         val identifier = """([^\/]+?)"""
         val GitHubHttps =
           s"https://github.com/$identifier/$identifier(?:\\.git)?".r
@@ -166,7 +166,7 @@ object CiReleasePlugin extends AutoPlugin {
     }
   )
 
-  override lazy val globalSettings: Seq[Def.Setting[_]] = List(
+  override lazy val globalSettings: Seq[Def.Setting[?]] = List(
     (Test / publishArtifact) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
@@ -215,7 +215,7 @@ object CiReleasePlugin extends AutoPlugin {
     }
   )
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = List(
+  override lazy val projectSettings: Seq[Def.Setting[?]] = List(
     version := (ThisBuild / version).value,
     publishConfiguration :=
       Def.uncached(publishConfiguration.value.withOverwrite(true)),
