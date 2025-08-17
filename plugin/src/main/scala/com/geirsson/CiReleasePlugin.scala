@@ -1,6 +1,7 @@
 package com.geirsson
 
 import com.geirsson.PipeFail.PipeFailOps
+import PluginCompat.*
 import com.github.sbt.git.GitPlugin
 import com.github.sbt.git.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
@@ -217,9 +218,9 @@ object CiReleasePlugin extends AutoPlugin {
   override lazy val projectSettings: Seq[Def.Setting[_]] = List(
     version := (ThisBuild / version).value,
     publishConfiguration :=
-      publishConfiguration.value.withOverwrite(true),
+      Def.uncached(publishConfiguration.value.withOverwrite(true)),
     publishLocalConfiguration :=
-      publishLocalConfiguration.value.withOverwrite(true),
+      Def.uncached(publishLocalConfiguration.value.withOverwrite(true)),
     publishTo := {
       val orig = (ThisBuild / publishTo).value
       (orig, localStaging.?.value) match {
