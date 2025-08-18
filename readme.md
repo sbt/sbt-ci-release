@@ -14,7 +14,7 @@ credentials as secret environment variables in GitHub Actions jobs. However,
 secret environment variables are not accessible during pull requests.
 
 **Note**: Sonatype has [sunset the Legacy OSSRH endpoint to publish](https://central.sonatype.org/news/20250326_ossrh_sunset/) on 2025-06-30.
-To publish to the Central Repository, please migrateo using sbt 1.11.x or later
+To publish to the Central Repository, please migrate to sbt 1.11.x or later
 and sbt-ci-release 1.11.0 or later after you migrate to publish to the Central Portal publishing.
 
 Let's get started!
@@ -36,7 +36,7 @@ Let's get started!
   - [Does sbt-ci-release work for sbt 0.13?](#does-sbt-ci-release-work-for-sbt-013)
   - [How do I publish sbt plugins?](#how-do-i-publish-sbt-plugins)
   - [java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff](#javaioioexception-secret-key-ring-doesnt-start-with-secret-key-tag-tag-0xffffffff)
-  - [java.io.IOException: PUT operation to URL https://s01.oss.sonatype.org/content/repositories/snapshots 400: Bad Request](#javaioioexception-put-operation-to-url-httpss01osssonatypeorgcontentrepositoriessnapshots-400-bad-request)
+  - [java.io.IOException: Server returned HTTP response code: 400 for URL: https://central.sonatype.com/repository/maven-snapshots](#javaioioexception-server-returned-http-response-code-400-for-url-httpscentralsonatypecomrepositorymaven-snapshots)
   - [java.io.IOException: Access to URL was refused by the server: Unauthorized](#javaioioexception-access-to-url-was-refused-by-the-server-unauthorized)
   - [Failed: signature-staging, failureMessage:Missing Signature:](#failed-signature-staging-failuremessagemissing-signature)
   - [How do I create release notes? Can they be automatically generated?](#how-do-i-create-release-notes-can-they-be-automatically-generated)
