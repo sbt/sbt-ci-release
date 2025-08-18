@@ -1,6 +1,7 @@
 package com.geirsson
 
 import com.geirsson.PipeFail.PipeFailOps
+import PluginCompat.*
 import com.github.sbt.git.GitPlugin
 import com.github.sbt.git.SbtGit.GitKeys
 import com.jsuereth.sbtpgp.SbtPgp
@@ -20,14 +21,12 @@ import sbtdynver.DynVerPlugin.autoImport.*
 import scala.deprecated
 import scala.sys.process.{given, *}
 import scala.util.control.NonFatal
-import xerial.sbt.Sonatype
-import xerial.sbt.Sonatype.autoImport.*
 
 object CiReleasePlugin extends AutoPlugin {
 
   override def trigger = allRequirements
   override def requires =
-    JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin && Sonatype
+    JvmPlugin && SbtPgp && DynVerPlugin && GitPlugin
 
   def isSecure: Boolean =
     System.getenv("TRAVIS_SECURE_ENV_VARS") == "true" ||
@@ -108,12 +107,21 @@ object CiReleasePlugin extends AutoPlugin {
 
   lazy val cireleasePublishCommand = settingKey[String]("")
 
-  override lazy val buildSettings: Seq[Def.Setting[_]] = List(
+  // copied from sbt Keys.scala
+  private val localStaging = settingKey[Option[Resolver]](
+    "Local staging resolver for Sonatype publishing"
+  )
+  private val sbtPluginPublishLegacyMavenStyle = settingKey[Boolean](
+    "Configuration for generating the legacy pom of sbt plugins, to publish to Maven"
+  )
+  override lazy val buildSettings: Seq[Def.Setting[?]] = List(
     dynverSonatypeSnapshots := true,
+    // Central Portal no longer supports the legacy style
+    sbtPluginPublishLegacyMavenStyle := false,
     scmInfo ~= {
       case Some(info) => Some(info)
-      case None =>
-        import scala.sys.process._
+      case None       =>
+        import scala.sys.process.*
         val identifier = """([^\/]+?)"""
         val GitHubHttps =
           s"https://github.com/$identifier/$identifier(?:\\.git)?".r
@@ -143,15 +151,25 @@ object CiReleasePlugin extends AutoPlugin {
         case None      => backPubVersionToCommand(v)
       }
     },
-    version ~= dropBackPubCommand
+    version := {
+      val v = version.value
+      dynverGitDescribeOutput.value match {
+        case Some(gitDescribe) =>
+          val tagVersion = gitDescribe.ref.dropPrefix
+          if (gitDescribe.isCleanAfterTag) {
+            dropBackPubCommand(v)
+          } else if (v.startsWith(tagVersion)) {
+            dropBackPubCommand(tagVersion) + v.drop(tagVersion.size)
+          } else v
+        case _ => v
+      }
+    }
   )
 
-  override lazy val globalSettings: Seq[Def.Setting[_]] = List(
+  override lazy val globalSettings: Seq[Def.Setting[?]] = List(
     (Test / publishArtifact) := false,
     publishMavenStyle := true,
     commands += Command.command("ci-release") { currentState =>
-      val shouldDeployToSonatypeCentral =
-        isDeploySetToSonatypeCentral(currentState)
       val version = getVersion(currentState)
       val isSnapshot = isSnapshotVersion(version)
       if (!isSecure) {
@@ -169,74 +187,53 @@ object CiReleasePlugin extends AutoPlugin {
 
         val publishCommand = getPublishCommand(currentState)
 
-        if (shouldDeployToSonatypeCentral) {
+        if (!isTag) {
           if (isSnapshot) {
-            println(
-              s"Sonatype Central does not accept snapshots, only official releases. Aborting release."
-            )
-            currentState
-          } else if (!isTag) {
-            println(
-              s"No tag published. Cannot publish an official release without a tag and Sonatype Central does not accept snapshot releases. Aborting release."
-            )
-            currentState
-          } else {
-            println("Tag push detected, publishing a stable release")
+            println(s"No tag push, publishing SNAPSHOT")
             reloadKeyFiles ::
-              sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-              publishCommand ::
-              sys.env
-                .getOrElse("CI_SONATYPE_RELEASE", "sonatypeCentralRelease") ::
+              sys.env.getOrElse("CI_CLEAN", "; clean") ::
+              // workaround for *.asc.sha1 not being allowed
+              sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
               currentState
+          } else {
+            // Happens when a tag is pushed right after merge causing the main branch
+            // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
+            println(
+              "Snapshot releases must have -SNAPSHOT version number, doing nothing"
+            )
+            currentState
           }
         } else {
-          if (!isTag) {
-            if (isSnapshot) {
-              println(s"No tag push, publishing SNAPSHOT")
-              reloadKeyFiles ::
-                sys.env.getOrElse("CI_SNAPSHOT_RELEASE", "+publish") ::
-                currentState
-            } else {
-              // Happens when a tag is pushed right after merge causing the master branch
-              // job to pick up a non-SNAPSHOT version even if TRAVIS_TAG=false.
-              println(
-                "Snapshot releases must have -SNAPSHOT version number, doing nothing"
-              )
-              currentState
-            }
-          } else {
-            println("Tag push detected, publishing a stable release")
-            reloadKeyFiles ::
-              sys.env.getOrElse("CI_CLEAN", "; clean ; sonatypeBundleClean") ::
-              publishCommand ::
-              sys.env
-                .getOrElse("CI_SONATYPE_RELEASE", "sonatypeBundleRelease") ::
-              currentState
-          }
+          println("Tag push detected, publishing a stable release")
+          reloadKeyFiles ::
+            sys.env.getOrElse("CI_CLEAN", "; clean") ::
+            publishCommand ::
+            sys.env.getOrElse("CI_SONATYPE_RELEASE", "sonaRelease") ::
+            currentState
         }
       }
     }
   )
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = List(
+  override lazy val projectSettings: Seq[Def.Setting[?]] = List(
     version := (ThisBuild / version).value,
     publishConfiguration :=
-      publishConfiguration.value.withOverwrite(true),
+      Def.uncached(publishConfiguration.value.withOverwrite(true)),
     publishLocalConfiguration :=
-      publishLocalConfiguration.value.withOverwrite(true),
-    publishTo := sonatypePublishToBundle.value
-  )
-
-  def isDeploySetToSonatypeCentral(state: State): Boolean = {
-    (ThisBuild / sonatypeCredentialHost).get(
-      Project.extract(state).structure.data
-    ) match {
-      case Some(value) if value == Sonatype.sonatypeCentralHost => {
-        true
+      Def.uncached(publishLocalConfiguration.value.withOverwrite(true)),
+    publishTo := {
+      val orig = (ThisBuild / publishTo).value
+      (orig, localStaging.?.value) match {
+        case (Some(r), _)          => orig
+        case (None, None)          => orig
+        case (None, Some(staging)) =>
+          val centralSnapshots =
+            "https://central.sonatype.com/repository/maven-snapshots/"
+          if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+          else staging
       }
-      case _ => false
     }
-  }
+  )
 
   def getVersion(state: State): String =
     (ThisBuild / version).get(Project.extract(state).structure.data) match {
