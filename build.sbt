@@ -4,7 +4,7 @@ lazy val scala3 = "3.7.2"
 inThisBuild(
   List(
     organization := "com.github.sbt",
-    homepage := Some(url("https://github.com/olafurpg/sbt-ci-release")),
+    homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
     licenses := Seq(
       "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
     ),

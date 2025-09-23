@@ -181,7 +181,7 @@ object CiReleasePlugin extends AutoPlugin {
             s"  branch=$currentBranch"
         )
         setupGpg()
-        // https://github.com/olafurpg/sbt-ci-release/issues/64
+        // https://github.com/sbt/sbt-ci-release/issues/64
         val reloadKeyFiles =
           "; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value"
 
