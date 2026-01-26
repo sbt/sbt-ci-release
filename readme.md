@@ -160,6 +160,8 @@ Next, copy the public gpg signature
 gpg --armor --export $LONG_ID | pbcopy
 # linux
 gpg --armor --export $LONG_ID | xclip
+# linux (if xclip doesn't automatically copy to clipboard)
+gpg --armor --export $LONG_ID | xclip -selection clipboard
 # Windows
 gpg --armor --export %LONG_ID%
 ```
@@ -211,6 +213,8 @@ Add the following secrets:
 gpg --armor --export-secret-keys $LONG_ID | base64 | pbcopy
 # Ubuntu (assuming GNU base64)
 gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip
+# Ubuntu (alternative if xclip doesn't copy to clipboard automatically)
+gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip -selection clipboard
 # Arch
 gpg --armor --export-secret-keys $LONG_ID | base64 | sed -z 's;\n;;g' | xclip -selection clipboard -i
 # FreeBSD (assuming BSD base64)
