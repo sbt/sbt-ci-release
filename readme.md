@@ -159,7 +159,7 @@ Next, copy the public gpg signature
 # macOS
 gpg --armor --export $LONG_ID | pbcopy
 # linux
-gpg --armor --export $LONG_ID | xclip
+gpg --armor --export $LONG_ID | xclip -selection clipboard
 # Windows
 gpg --armor --export %LONG_ID%
 ```
@@ -210,11 +210,11 @@ Add the following secrets:
 # macOS
 gpg --armor --export-secret-keys $LONG_ID | base64 | pbcopy
 # Ubuntu (assuming GNU base64)
-gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip
+gpg --armor --export-secret-keys $LONG_ID | base64 -w0 | xclip -selection clipboard
 # Arch
 gpg --armor --export-secret-keys $LONG_ID | base64 | sed -z 's;\n;;g' | xclip -selection clipboard -i
 # FreeBSD (assuming BSD base64)
-gpg --armor --export-secret-keys $LONG_ID | base64 | xclip
+gpg --armor --export-secret-keys $LONG_ID | base64 | xclip -selection clipboard
 # Windows
 gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 ```
