@@ -48,7 +48,7 @@ Let's get started!
 ## Sonatype
 
 First, follow the instructions in
-https://central.sonatype.org/pages/ossrh-guide.html to create a Sonatype account
+https://central.sonatype.org/publish/generate-portal-token/ to create a Sonatype account
 and make sure you have publishing rights for a domain name. This is a one-time
 setup per domain name.
 
@@ -223,7 +223,7 @@ gpg --armor --export-secret-keys %LONG_ID% | openssl base64
 may include an additional % character at the end, to mark the end of content which was not terminated by a newline character. This does not indicate a problem.
 Note for Windows - delete any linebreaks or spaces when copying the encoded string from terminal.*
 - `SONATYPE_PASSWORD`: The password part of your Sonatype
-  [OSSRH token](https://central.sonatype.com/account), generated on the Central Portal (not the account password!).
+  [user token](https://central.sonatype.com/usertoken), generated on the Central Portal (not the account password!).
 - `SONATYPE_USERNAME`: The username part of your Sonatype
   user token (not the account username!).
 - (optional) `CI_RELEASE`: the command to publish all artifacts for stable
