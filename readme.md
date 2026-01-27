@@ -82,6 +82,8 @@ Next, install this plugin in `project/plugins.sbt`
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "<version>")
 ```
 
+> **Note**: `<version>` must be a full SemVer version number.
+
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
 
 - [sbt-dynver](https://github.com/dwijnand/sbt-dynver): sets the version number
