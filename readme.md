@@ -75,7 +75,7 @@ from your "user token".
 
 Next, install this plugin in `project/plugins.sbt`
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.sbt/sbt-ci-release/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.sbt/sbt-ci-release)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.sbt/sbt-ci-release)](https://central.sonatype.com/artifact/com.github.sbt/sbt-ci-release)
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
