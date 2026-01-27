@@ -75,12 +75,14 @@ from your "user token".
 
 Next, install this plugin in `project/plugins.sbt`
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.sbt/sbt-ci-release/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.sbt/sbt-ci-release)
+[![Maven Central Version](https://index.scala-lang.org/sbt/sbt-ci-release/sbt-ci-release/latest-by-scala-version.svg?targetType=Sbt)](https://index.scala-lang.org/sbt/sbt-ci-release/sbt-ci-release)
 
 ```scala
 // sbt 1 only, see FAQ for 0.13 support
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "<version>")
 ```
+
+> **Note**: `<version>` must be replaced by a full SemVer version number (like `1.11.2`).
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
 
