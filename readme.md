@@ -82,7 +82,7 @@ Next, install this plugin in `project/plugins.sbt`
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "<version>")
 ```
 
-> **Note**: `<version>` must be a full SemVer version number.
+> **Note**: `<version>` must be replaced by a full SemVer version number (like `1.11.2`).
 
 By installing `sbt-ci-release` the following sbt plugins are also brought in:
 
