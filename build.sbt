@@ -1,5 +1,5 @@
 lazy val scala212 = "2.12.21"
-lazy val scala3 = "3.7.3"
+lazy val scala3 = "3.8.1"
 
 inThisBuild(
   List(
@@ -30,14 +30,14 @@ lazy val plugin = project
     crossScalaVersions := Seq(scala212, scala3),
     scalacOptions ++= {
       scalaBinaryVersion.value match {
-        case "2.12" => "-Xsource:3" :: Nil
+        case "2.12" => "-Xsource:3" :: "-release:8" :: Nil
         case _      => Nil
       }
     },
     (pluginCrossBuild / sbtVersion) := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.5.8"
-        case _      => "2.0.0-RC3"
+        case _      => "2.0.0-RC9"
       }
     },
     libraryDependencies += "org.scalameta" %% "munit" % "1.2.2" % Test,
