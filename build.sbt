@@ -1,5 +1,5 @@
 lazy val scala212 = "2.12.21"
-lazy val scala3 = "3.8.1"
+lazy val scala3 = "3.8.2"
 
 inThisBuild(
   List(
