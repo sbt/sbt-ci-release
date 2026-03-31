@@ -455,6 +455,7 @@ project?
 - [scalameta/metabrowse](https://github.com/scalameta/metabrowse/)
 - [scalameta/metals](https://github.com/scalameta/metals/)
 - [scalameta/scalafmt](https://github.com/scalameta/scalafmt/)
+- [SgtSwagrid/scala-library-template](https://github.com/SgtSwagrid/scala-library-template)
 - [softwaremill/sttp](https://github.com/softwaremill/sttp)
 - [softwaremill/tapir](https://github.com/softwaremill/tapir)
 - [typelevel/paiges](https://github.com/typelevel/paiges/)
