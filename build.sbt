@@ -40,7 +40,7 @@ lazy val plugin = project
         case _      => "2.0.0"
       }
     },
-    libraryDependencies += "org.scalameta" %% "munit" % "1.3.4" % Test,
+    libraryDependencies += "org.scalameta" %% "munit" % "1.3.5" % Test,
     addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1"),
     addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.1")
   )
