@@ -1,8 +1,9 @@
 lazy val scala212 = "2.12.21"
-lazy val scala3 = "3.8.4"
+lazy val scala3 = "3.9.0"
 
 inThisBuild(
   List(
+    scalaVersion := scala212,
     organization := "com.github.sbt",
     homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
     licenses := Seq(
@@ -37,7 +38,7 @@ lazy val plugin = project
     (pluginCrossBuild / sbtVersion) := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.5.8"
-        case _      => "2.0.0"
+        case _      => "2.1.0"
       }
     },
     libraryDependencies += "org.scalameta" %% "munit" % "1.3.6" % Test,
