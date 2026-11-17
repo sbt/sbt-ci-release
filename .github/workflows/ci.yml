@@ -11,6 +11,10 @@ jobs:
         include:
           - java: 17
             scala: 3.x
+          - java: 21
+            scala: 3.x
+          - java: 25
+            scala: 3.x
           - java: 8
             scala: 2.12.x
     steps:
@@ -29,6 +33,6 @@ jobs:
     - uses: actions/setup-java@v6
       with:
         distribution: temurin
-        java-version: 8
+        java-version: 17
     - uses: sbt/setup-sbt@v1
     - run: sbt scalafmtSbtCheck +scalafmtCheckAll
